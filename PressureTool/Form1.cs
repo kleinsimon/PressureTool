@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace PressureTool
@@ -31,30 +32,48 @@ namespace PressureTool
                 _cP = value;
             }
         }
-        static private AnswerFormat ExpectedAnswer = null;
 
-        static public bool _continue = true;
-        static private bool QuestionSent = false;
-        static private bool QuestionACK = false;
-        static private bool ENQSent = false;
+        private Questions lastQuestion = Questions.NULL;
+        private Queue<KeyValuePair<Questions, string[]>> OutputBuffer = new Queue<KeyValuePair<Questions, string[]>>();
 
-        static private SerialPort Port = new SerialPort();
-        private Thread ReadThreat = new Thread(Read);
+        public bool _continue = true;
+        private bool QuestionSent = false;
+        private bool QuestionACK = false;
+        private bool ENQSent = false;
+        private bool AwaitingAnswer = false;
+
+        private SerialPort Port;
+        //private Thread ReadThreat = new Thread(Read
+        
 
         public MainForm()
         {
             InitializeComponent();
+
+            BoxComPorts.DataSource = SerialPort.GetPortNames();
+            BoxBaud.DataSource = new int[] { 9600, 19200, 38400 };
         }
 
-        private static void parseAnswer(string Answer)
+        void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            try
+            {
+                getAnswer(Port.ReadLine());
+            }
+            catch (TimeoutException) { }
+        }
+
+        private void getAnswer(string Answer)
+        {
+            //setText(Answer);
             Answer = Answer.Replace(CR, string.Empty);
             Answer = Answer.Replace(LF, string.Empty);
 
             if (Answer.Contains(NAK))
             {
-                ExpectedAnswer = null;
+                lastQuestion = Questions.NULL;
                 QuestionSent = QuestionACK = ENQSent = false;
+                AwaitingAnswer = false;
                 //TODO ERROR
                 return;
             }
@@ -67,12 +86,17 @@ namespace PressureTool
             }
             else if (QuestionSent && QuestionACK && ENQSent)
             {
-                if (!(ExpectedAnswer == null))
+                if (lastQuestion != Questions.COM) AwaitingAnswer = false;
+                if (lastQuestion != Questions.NULL)
                 {
-                    if (ExpectedAnswer.Matches(Answer))
+                    if (Regex.IsMatch(Answer,serialInterface.Answers[lastQuestion].RegexAnswer))
                     {
-                        QuestionSent = QuestionACK = ENQSent = false;
-                        //TODO Answer
+                        parseAnswer(Answer, lastQuestion);
+                        if (lastQuestion != Questions.COM)
+                        {
+                            QuestionSent = QuestionACK = ENQSent = false;
+                            lastQuestion = Questions.NULL;
+                        }
                     }
                     else
                     {
@@ -82,48 +106,121 @@ namespace PressureTool
             }
         }
 
-        public static void Read()
+        private void parseAnswer(string Answer, Questions Question)
         {
-            while (_continue)
+            string[] res = Answer.Split(',');
+            switch (Question)
             {
-                try
-                {
-                    string message = Port.ReadLine();
-                    parseAnswer(message);
-                }
-                catch (TimeoutException) { }
+                case Questions.PRX:
+                    txtMes1On.Visible = (res[0] == "0") ? true : false;
+                    //txtMes2On.Visible = (res[0] == "0") ? true : false;
+                    string[] P = res[1].Split('E');
+                    TXTcurPressure.Text = P[0];
+                    TXTcurPressureExp.Text = P[1];
+                        break;
+                
+                case Questions.SPS:
+                    TXTmes1SP1.Visible = (res[0] == "1") ? true : false;
+                    TXTmes1SP2.Visible = (res[1] == "1") ? true : false;
+                        break;
             }
+        }
+
+        private void setText(string text)
+        {
+            TXTcurPressure.Text += text;
         }
 
         private void sendQuestion(Questions Question, string[] Parameter = null)
         {
-            QuestionOptions Opts = serialInterface.Answers[Question];
-            if (Opts.numParameter > 0)
-            {
-                if (Parameter == null)
-                {
-                    // ERROR
-                    return;
-                }
-                else if ( Parameter.Length != Opts.numParameter)
-                {
-                    // ERROR
-                    return;
-                }
-            }
-
-            ExpectedAnswer = new AnswerFormat(Opts.RegexAnswer);
-            try
-            {
-                Port.WriteLine(Question.ToString());
-                QuestionSent = true;
-            }
-            catch (TimeoutException) { }
+            if (!Port.IsOpen) return;
+            OutputBuffer.Enqueue(new KeyValuePair<Questions, string[]>(Question, Parameter));
         }
 
         private void getPresure_Click(object sender, EventArgs e)
         {
             sendQuestion(Questions.PRX);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                Port.Close();
+            }
+            catch { }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            sendQuestion(Questions.COM,new string[] {"1"});
+        }
+
+
+        private void ButConnect_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ButConnect.Checked)
+            {
+                Port = new SerialPort();
+                Port.PortName = BoxComPorts.Text;
+                Port.BaudRate = int.Parse(BoxBaud.Text);
+                Port.Parity = Parity.None;
+                Port.StopBits = StopBits.One;
+                Port.DataBits = 8;
+                Port.Handshake = Handshake.None;
+                Port.Open();
+                Port.DataReceived += new SerialDataReceivedEventHandler(Port_DataReceived);
+                ButConnect.Text = "Connected";
+            }
+            else
+            {
+                OutputBuffer.Clear();
+                Port.Close();
+                Port.Dispose();
+                Port = null;
+                ButConnect.Text = "Connect";
+            }
+        }
+
+        private void getStatus_DoWork(object sender, DoWorkEventArgs e)
+        {
+            sendQuestion(Questions.SPS);
+            sendQuestion(Questions.DGS);
+            sendQuestion(Questions.UNI);
+            sendQuestion(Questions.OFC);
+            sendQuestion(Questions.CAL);
+            sendQuestion(Questions.PRX);
+        }
+
+        private void Asker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (OutputBuffer.Count > 0 && !AwaitingAnswer && Port.IsOpen)
+            {
+                KeyValuePair<Questions, string[]> CurCommand = OutputBuffer.Dequeue();
+                Questions Question = CurCommand.Key;
+                string[] Parameter = CurCommand.Value;
+
+                QuestionSent = QuestionACK = ENQSent = false;
+                QuestionOptions Opts = serialInterface.Answers[Question];
+                if (Opts.numParameter > 0 && Parameter != null)
+                {
+                    if (Parameter.Length != Opts.numParameter)
+                    {
+                        // ERROR
+                        return;
+                    }
+                }
+
+                try
+                {
+                    Port.WriteLine(Question.ToString() + ((Parameter != null) ? "," + String.Join(",", Parameter) : ""));
+                    QuestionSent = true;
+                    lastQuestion = Question;
+                    if (Question == Questions.COM) QuestionSent = QuestionACK = ENQSent = true;
+                    AwaitingAnswer = true;
+                }
+                catch (TimeoutException) { }
+            }
         }
     }
 }

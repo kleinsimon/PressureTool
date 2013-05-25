@@ -47,82 +47,68 @@ namespace PressureTool
         TKB,
         TLC,
         UNI,
-        WDT
+        WDT,
+        NULL
     }
 
-    struct QuestionOptions
+    class QuestionOptions
     {
         public int numParameter = 0;
-        public bool Continous = false;
         public string RegexAnswer = "";
 
-        public QuestionOptions(string RegexEpxectedAnswer, int NumberOfParameters, bool ContinousAnswer)
+        public QuestionOptions(string RegexEpxectedAnswer, int NumberOfParameters)
         {
             numParameter = NumberOfParameters;
-            Continous = ContinousAnswer;
             RegexAnswer = RegexEpxectedAnswer;
         }
     }
 
-    static struct serialInterface
+    static class serialInterface
     { 
         static public Dictionary<Questions, QuestionOptions> Answers = new Dictionary<Questions, QuestionOptions>()
         {
-            { Questions.ADC, new QuestionOptions("", 0, false) },
-            { Questions.BAU, new QuestionOptions("", 0, false) },
-            { Questions.COM, new QuestionOptions("", 0, false) },
-            { Questions.CAL, new QuestionOptions("", 0, false) },
-            { Questions.DCD, new QuestionOptions("", 0, false) },
-            { Questions.DGS, new QuestionOptions("", 0, false) },
-            { Questions.DIC, new QuestionOptions("", 0, false) },
-            { Questions.DIS, new QuestionOptions("", 0, false) },
-            { Questions.EEP, new QuestionOptions("", 0, false) },
-            { Questions.EPR, new QuestionOptions("", 0, false) },
-            { Questions.ERR, new QuestionOptions("", 0, false) },
-            { Questions.FIL, new QuestionOptions("", 0, false) },
-            { Questions.FSR, new QuestionOptions("", 0, false) },
-            { Questions.IOT, new QuestionOptions("", 0, false) },
-            { Questions.LOC, new QuestionOptions("", 0, false) },
-            { Questions.OFC, new QuestionOptions("", 0, false) },
-            { Questions.OFD, new QuestionOptions("", 0, false) },
-            { Questions.PNR, new QuestionOptions("", 0, false) },
-            { Questions.PR1, new QuestionOptions("", 0, false) },
-            { Questions.PR2, new QuestionOptions("", 0, false) },
-            { Questions.PRX, new QuestionOptions(@"\d,[ +-]\d\.\d\d\d\dE[ +-]\d\d,\d,[ +-]\d\.\d\d\d\dE[ +-]\d\d", 0, false) },
-            { Questions.PUC, new QuestionOptions("", 0, false) },
-            { Questions.RAM, new QuestionOptions("", 0, false) },
-            { Questions.RES, new QuestionOptions("", 0, false) },
-            { Questions.RST, new QuestionOptions("", 0, false) },
-            { Questions.SAV, new QuestionOptions("", 0, false) },
-            { Questions.SC1, new QuestionOptions("", 0, false) },
-            { Questions.SC2, new QuestionOptions("", 0, false) },
-            { Questions.SCT, new QuestionOptions("", 0, false) },
-            { Questions.SEN, new QuestionOptions("", 0, false) },
-            { Questions.SP1, new QuestionOptions("", 0, false) },
-            { Questions.SP2, new QuestionOptions("", 0, false) },
-            { Questions.SP3, new QuestionOptions("", 0, false) },
-            { Questions.SP4, new QuestionOptions("", 0, false) },
-            { Questions.SPS, new QuestionOptions("", 0, false) },
-            { Questions.TID, new QuestionOptions("", 0, false) },
-            { Questions.TKB, new QuestionOptions("", 0, false) },
-            { Questions.TLC, new QuestionOptions("", 0, false) },
-            { Questions.UNI, new QuestionOptions("", 0, false) },
-            { Questions.WDT, new QuestionOptions("", 0, false) },
+            { Questions.ADC, new QuestionOptions(@"\d\d?\.\d{4},\d\d?\.\d{4},\d\d?\.\d{4},\d\d?\.\d{4}", 0) },
+            { Questions.BAU, new QuestionOptions(@"\d", 1) },
+            { Questions.COM, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2},\d,[ +-]?\d\.\d{4}E[ +-]?\d{2}", 1) },
+            { Questions.CAL, new QuestionOptions(@"\d\.\d{3},\d\.\d{3}", 2) },
+            { Questions.DCD, new QuestionOptions(@"\d", 1) },
+            { Questions.DGS, new QuestionOptions(@"\d,\d", 2) },
+            { Questions.DIC, new QuestionOptions(@"\d", 1) },
+            { Questions.DIS, new QuestionOptions(@"\d", 1) },
+            { Questions.EEP, new QuestionOptions(@".+", 0) },
+            { Questions.EPR, new QuestionOptions(@".+,[0-9a-fA-F]+", 0) },
+            { Questions.ERR, new QuestionOptions(@"\d{4}", 0) },
+            { Questions.FIL, new QuestionOptions(@"\d,\d", 2) },
+            { Questions.FSR, new QuestionOptions(@"\d,\d", 2) },
+            { Questions.IOT, new QuestionOptions(@"\d,[0-9a-fA-F]{2}", 2) },
+            { Questions.LOC, new QuestionOptions(@"\d", 1) },
+            { Questions.OFC, new QuestionOptions(@"\d,\d", 2) },
+            { Questions.OFD, new QuestionOptions(@"[ +-]?\d\.\d{4}E[ +-]?\d{2},[ +-]?\d\.\d{4}E[ +-]?\d{2}", 2) },
+            { Questions.PNR, new QuestionOptions(@".+", 0) },
+            { Questions.PR1, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2}", 0) },
+            { Questions.PR2, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2}", 0) },
+            { Questions.PRX, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2},\d,[ +-]?\d\.\d{4}E[ +-]?\d{2}", 0) },
+            { Questions.PUC, new QuestionOptions(@"\d,\d", 2) },
+            { Questions.RAM, new QuestionOptions(@"\d+", 0) },
+            { Questions.RES, new QuestionOptions(@"(\d+,?)+", 1) },
+            { Questions.RST, new QuestionOptions(@".*", 0) },
+            { Questions.SAV, new QuestionOptions(@".*", 1) },
+            { Questions.SC1, new QuestionOptions(@"\d,\d,[ +-]?\d\.\d+E[ +-]?\d{2},[ +-]?\d\.\d+dE[ +-]?\d{2}", 4) },
+            { Questions.SC2, new QuestionOptions(@"\d,\d,[ +-]?\d\.\d+E[ +-]?\d{2},[ +-]?\d\.\d+dE[ +-]?\d{2}", 4) },
+            { Questions.SCT, new QuestionOptions(@"\d", 1) },
+            { Questions.SEN, new QuestionOptions(@"\d,\d", 2) },
+            { Questions.SP1, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2},[ +-]?\d\.\d{4}E[ +-]?\d{2}", 3) },
+            { Questions.SP2, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2},[ +-]?\d\.\d{4}E[ +-]?\d{2}", 3) },
+            { Questions.SP3, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2},[ +-]?\d\.\d{4}E[ +-]?\d{2}", 3) },
+            { Questions.SP4, new QuestionOptions(@"\d,[ +-]?\d\.\d{4}E[ +-]?\d{2},[ +-]?\d\.\d{4}E[ +-]?\d{2}", 3) },
+            { Questions.SPS, new QuestionOptions(@"\d,\d,\d,\d", 0) },
+            { Questions.TID, new QuestionOptions(@"\w+,\w+", 0) },
+            { Questions.TKB, new QuestionOptions(@"\d{4}", 0) },
+            { Questions.TLC, new QuestionOptions(@"\d", 1) },
+            { Questions.UNI, new QuestionOptions(@"\d", 1) },
+            { Questions.WDT, new QuestionOptions(@"\d", 1) },
         };
     }
 
-    class AnswerFormat
-    {
-        string _f;
-        public AnswerFormat(string RegexFormat)
-        {
-            _f = RegexFormat;
-        }
-
-        public bool Matches(string Answer)
-        {
-            Regex rx = new Regex(_f);
-            return (rx.IsMatch(Answer)) ? true : false;
-        }
-    }
+    
 }
