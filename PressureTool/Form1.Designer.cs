@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.TXTcurPressure = new System.Windows.Forms.TextBox();
             this.TXTcurPressureExp = new System.Windows.Forms.TextBox();
             this.TXTUnit = new System.Windows.Forms.TextBox();
@@ -47,10 +48,11 @@
             this.getStatusTimer = new System.Windows.Forms.Timer(this.components);
             this.AskerTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.ButLog = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.ButLog = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // TXTcurPressure
@@ -233,34 +235,11 @@
             this.AskerTimer.Interval = 3;
             this.AskerTimer.Tick += new System.EventHandler(this.AskerTimer_Tick);
             // 
-            // ButLog
-            // 
-            this.ButLog.Location = new System.Drawing.Point(260, 275);
-            this.ButLog.Name = "ButLog";
-            this.ButLog.Size = new System.Drawing.Size(75, 23);
-            this.ButLog.TabIndex = 14;
-            this.ButLog.Text = "Logdatei";
-            this.ButLog.UseVisualStyleBackColor = true;
-            this.ButLog.Click += new System.EventHandler(this.ButLog_Click);
-            // 
             // saveFileDialog1
             // 
             this.saveFileDialog1.Filter = "txt-Datei|*.txt";
             this.saveFileDialog1.RestoreDirectory = true;
             this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox1.Enabled = false;
-            this.checkBox1.Location = new System.Drawing.Point(260, 304);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(75, 23);
-            this.checkBox1.TabIndex = 15;
-            this.checkBox1.Text = "Start Log";
-            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // textBox1
             // 
@@ -272,12 +251,50 @@
             this.textBox1.Size = new System.Drawing.Size(248, 131);
             this.textBox1.TabIndex = 17;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox1.Enabled = false;
+            this.checkBox1.Image = global::PressureTool.Properties.Resources.RecordHS;
+            this.checkBox1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.checkBox1.Location = new System.Drawing.Point(262, 266);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(75, 23);
+            this.checkBox1.TabIndex = 15;
+            this.checkBox1.Text = "Log...";
+            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // ButLog
+            // 
+            this.ButLog.BackColor = System.Drawing.Color.Transparent;
+            this.ButLog.Image = global::PressureTool.Properties.Resources.openfolderHS;
+            this.ButLog.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ButLog.Location = new System.Drawing.Point(262, 237);
+            this.ButLog.Name = "ButLog";
+            this.ButLog.Size = new System.Drawing.Size(75, 23);
+            this.ButLog.TabIndex = 14;
+            this.ButLog.Text = "Logfile";
+            this.ButLog.UseVisualStyleBackColor = false;
+            this.ButLog.Click += new System.EventHandler(this.ButLog_Click);
+            // 
+            // button1
+            // 
+            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
+            this.button1.Location = new System.Drawing.Point(310, 306);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 23);
+            this.button1.TabIndex = 18;
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(351, 339);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.ButLog);
@@ -294,6 +311,7 @@
             this.Controls.Add(this.TXTUnit);
             this.Controls.Add(this.TXTcurPressureExp);
             this.Controls.Add(this.TXTcurPressure);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "PressureTool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -326,6 +344,7 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button1;
 
     }
 }

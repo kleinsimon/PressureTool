@@ -24,6 +24,7 @@ namespace PressureTool
         private bool logging = false;
         private string logFile;
         private TextWriter logFileWriter;
+        private bool AnswerRecieved = false;
 
         private double _cP;
         private double currentPressure
@@ -79,14 +80,17 @@ namespace PressureTool
                 AwaitingAnswer = false;
                 return;
             }
-            else if (QuestionSent && !QuestionACK && Answer.Contains(ACK))
+            else if (Answer.Contains(ACK))
             {
                 debugMSG("ACK Recieved", 3);
-                Port.WriteLine(ENQ);
-                debugMSG("ENQ Sent", 3);
-                QuestionACK=true;
-                ENQSent = true;
-                return;
+                if (lastQuestion != Questions.COM)
+                {
+                    Port.WriteLine(ENQ);
+                    debugMSG("ENQ Sent", 3);
+                    QuestionACK = true;
+                    ENQSent = true;
+                    return;
+                }
             }
             else if (QuestionSent && QuestionACK && ENQSent)
             {
@@ -118,6 +122,7 @@ namespace PressureTool
         private void parseAnswer(string Answer, Questions Question)
         {
             string[] res = Answer.Split(',');
+            AnswerRecieved = true;
             switch (Question)
             {
                 case Questions.PRX:
@@ -174,6 +179,7 @@ namespace PressureTool
 
         private void sendQuestion(Questions Question, string[] Parameter = null)
         {
+            if (Port == null) return;
             if (!Port.IsOpen) return;
             OutputBuffer.Enqueue(new KeyValuePair<Questions, string[]>(Question, Parameter));
         }
@@ -183,11 +189,7 @@ namespace PressureTool
             Properties.Settings.Default.ComPort = BoxComPorts.Text;
             Properties.Settings.Default.BaudRate = BoxBaud.Text;
             Properties.Settings.Default.Save();
-            try
-            {
-                Port.Close();
-            }
-            catch { }
+            disconnect();
         }
 
         void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -198,54 +200,73 @@ namespace PressureTool
             }
             catch (TimeoutException)
             {
-                debugMSG("Timeout recieving Answer", 2);
+                onTimeout();
             }
+        }
+
+        private void connect()
+        {
+            try
+            {
+                Port = new SerialPort();
+                Port.PortName = BoxComPorts.Text;
+                Port.BaudRate = int.Parse(BoxBaud.Text);
+                Port.Parity = Parity.None;
+                Port.StopBits = StopBits.One;
+                Port.DataBits = 8;
+                Port.Handshake = Handshake.None;
+                Port.Open();
+                Port.DataReceived += new SerialDataReceivedEventHandler(Port_DataReceived);
+                Port.ErrorReceived += new SerialErrorReceivedEventHandler(Port_ErrorReceived);
+                Port.ReadTimeout = 2000;
+                Port.WriteTimeout = 2000;
+                ButConnect.Text = "Connected";
+                ButConnect.BackColor = Color.Green;
+                debugMSG("Connected to " + Port.PortName + " with baud " + Port.BaudRate.ToString(), 1);
+                getStatusTimer.Start();
+                getStatus.RunWorkerAsync();
+                AskerTimer.Start();
+            }
+            catch
+            {
+                checkBox1.Checked = false;
+                debugMSG("Port could not be opened", 1);
+                ButConnect.Checked = false;
+            }
+        }
+
+        private void disconnect()
+        {
+            try
+            {
+                OutputBuffer.Clear();
+                Port.Close();
+                Port.Dispose();
+                Port = null;
+                ButConnect.Text = "Connect";
+                ButConnect.BackColor = Color.Transparent;
+                debugMSG("Disconnected", 1);
+                getStatusTimer.Stop();
+                AskerTimer.Stop();
+            }
+            catch { }
+        }
+
+        private void onTimeout()
+        {
+            debugMSG("Timeout recieving Answer", 1);
+            disconnect();
         }
 
         private void ButConnect_CheckedChanged(object sender, EventArgs e)
         {
             if (ButConnect.Checked)
             {
-                try
-                {
-                    Port = new SerialPort();
-                    Port.PortName = BoxComPorts.Text;
-                    Port.BaudRate = int.Parse(BoxBaud.Text);
-                    Port.Parity = Parity.None;
-                    Port.StopBits = StopBits.One;
-                    Port.DataBits = 8;
-                    Port.Handshake = Handshake.None;
-                    Port.Open();
-                    Port.DataReceived += new SerialDataReceivedEventHandler(Port_DataReceived);
-                    Port.ErrorReceived += new SerialErrorReceivedEventHandler(Port_ErrorReceived);
-                    ButConnect.Text = "Connected";
-                    debugMSG("Connected to " + Port.PortName + " with baud " + Port.BaudRate.ToString(), 1);
-                    getStatusTimer.Start();
-                    getStatus.RunWorkerAsync();
-                    AskerTimer.Start();
-                }
-                catch
-                {
-                    debugMSG("Port could not be opened", 1);
-                    ButConnect.Checked = false;
-                }
+                connect();
             }
             else
             {
-                try
-                {
-                    OutputBuffer.Clear();
-                    Port.Close();
-                    Port.Dispose();
-                    Port = null;
-                    ButConnect.Text = "Connect";
-                    debugMSG("Disconnected", 1);
-                    getStatusTimer.Stop();
-                    AskerTimer.Stop();
-                    //Asker.CancelAsync();
-                    //getStatus.CancelAsync();
-                }
-                catch { }
+                disconnect();
             }
         }
 
@@ -298,8 +319,12 @@ namespace PressureTool
                     AwaitingAnswer = true;
                 }
                 catch (TimeoutException) {
-                    debugMSG("Timout Sending",1);
+                    onTimeout();
                 }
+            }
+            else if (!Port.IsOpen)
+            {
+                connect();
             }
         }
 
@@ -317,6 +342,7 @@ namespace PressureTool
         private void getStatusTimer_Tick(object sender, EventArgs e)
         {
             if (logging) return;
+            if (!AnswerRecieved) onTimeout();
             if (!getStatus.IsBusy) getStatus.RunWorkerAsync();
         }
 
@@ -335,6 +361,7 @@ namespace PressureTool
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             logFile = saveFileDialog1.FileName;
+            ButLog.Image = Properties.Resources.OK;
             checkBox1.Enabled = true;
         }
 
@@ -353,11 +380,16 @@ namespace PressureTool
                 logFileWriter = new StreamWriter(logFile);
                 logFileWriter.WriteLine("Time\tPressure");
                 logFileWriter.WriteLine("None\t" + TXTUnit.Text);
+                debugMSG("Logfile created, logging...", 1);
                 checkBox1.Text = "Logging";
+                checkBox1.BackColor = Color.Green;
+                checkBox1.Image = Properties.Resources.Gear;
             }
             else if (logging)
             {
-                checkBox1.Text = "Start Log";
+                checkBox1.Image = Properties.Resources.RecordHS;
+                checkBox1.Text = "Log...";
+                checkBox1.BackColor = Color.Transparent;
                 logging = false;
                 logFileWriter.Close();
                 logFileWriter.Dispose();
