@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.TXTcurPressure = new System.Windows.Forms.TextBox();
             this.TXTcurPressureExp = new System.Windows.Forms.TextBox();
             this.TXTUnit = new System.Windows.Forms.TextBox();
@@ -43,6 +44,14 @@
             this.ButConnect = new System.Windows.Forms.CheckBox();
             this.getStatus = new System.ComponentModel.BackgroundWorker();
             this.Asker = new System.ComponentModel.BackgroundWorker();
+            this.getStatusTimer = new System.Windows.Forms.Timer(this.components);
+            this.AskerTimer = new System.Windows.Forms.Timer(this.components);
+            this.listBoxLog = new System.Windows.Forms.ListBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ButLog = new System.Windows.Forms.Button();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // TXTcurPressure
@@ -54,9 +63,9 @@
             this.TXTcurPressure.Location = new System.Drawing.Point(12, 46);
             this.TXTcurPressure.Name = "TXTcurPressure";
             this.TXTcurPressure.ReadOnly = true;
-            this.TXTcurPressure.Size = new System.Drawing.Size(196, 74);
+            this.TXTcurPressure.Size = new System.Drawing.Size(244, 74);
             this.TXTcurPressure.TabIndex = 0;
-            this.TXTcurPressure.Text = "0.00";
+            this.TXTcurPressure.Text = "1.0000";
             this.TXTcurPressure.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // TXTcurPressureExp
@@ -185,6 +194,7 @@
             this.BoxBaud.Name = "BoxBaud";
             this.BoxBaud.Size = new System.Drawing.Size(121, 21);
             this.BoxBaud.TabIndex = 11;
+            this.BoxBaud.SelectedIndexChanged += new System.EventHandler(this.BoxBaud_SelectedIndexChanged);
             // 
             // BoxComPorts
             // 
@@ -194,16 +204,17 @@
             this.BoxComPorts.Name = "BoxComPorts";
             this.BoxComPorts.Size = new System.Drawing.Size(121, 21);
             this.BoxComPorts.TabIndex = 12;
+            this.BoxComPorts.SelectedIndexChanged += new System.EventHandler(this.BoxComPorts_SelectedIndexChanged);
             // 
             // ButConnect
             // 
             this.ButConnect.Appearance = System.Windows.Forms.Appearance.Button;
-            this.ButConnect.AutoSize = true;
             this.ButConnect.Location = new System.Drawing.Point(262, 169);
             this.ButConnect.Name = "ButConnect";
-            this.ButConnect.Size = new System.Drawing.Size(57, 23);
+            this.ButConnect.Size = new System.Drawing.Size(75, 23);
             this.ButConnect.TabIndex = 0;
             this.ButConnect.Text = "Connect";
+            this.ButConnect.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ButConnect.UseVisualStyleBackColor = true;
             this.ButConnect.CheckedChanged += new System.EventHandler(this.ButConnect_CheckedChanged);
             // 
@@ -215,12 +226,72 @@
             // 
             this.Asker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.Asker_DoWork);
             // 
+            // getStatusTimer
+            // 
+            this.getStatusTimer.Interval = 1000;
+            this.getStatusTimer.Tick += new System.EventHandler(this.getStatusTimer_Tick);
+            // 
+            // AskerTimer
+            // 
+            this.AskerTimer.Interval = 10;
+            this.AskerTimer.Tick += new System.EventHandler(this.AskerTimer_Tick);
+            // 
+            // listBoxLog
+            // 
+            this.listBoxLog.FormattingEnabled = true;
+            this.listBoxLog.Location = new System.Drawing.Point(12, 208);
+            this.listBoxLog.Name = "listBoxLog";
+            this.listBoxLog.Size = new System.Drawing.Size(244, 121);
+            this.listBoxLog.TabIndex = 13;
+            // 
+            // ButLog
+            // 
+            this.ButLog.Location = new System.Drawing.Point(262, 221);
+            this.ButLog.Name = "ButLog";
+            this.ButLog.Size = new System.Drawing.Size(73, 23);
+            this.ButLog.TabIndex = 14;
+            this.ButLog.Text = "Logdatei";
+            this.ButLog.UseVisualStyleBackColor = true;
+            this.ButLog.Click += new System.EventHandler(this.ButLog_Click);
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.Filter = "txt-Datei|*.txt";
+            this.saveFileDialog1.RestoreDirectory = true;
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox1.Location = new System.Drawing.Point(262, 250);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(75, 23);
+            this.checkBox1.TabIndex = 15;
+            this.checkBox1.Text = "Log...";
+            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(260, 306);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(351, 204);
+            this.ClientSize = new System.Drawing.Size(351, 339);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.ButLog);
+            this.Controls.Add(this.listBoxLog);
             this.Controls.Add(this.ButConnect);
             this.Controls.Add(this.BoxComPorts);
             this.Controls.Add(this.BoxBaud);
@@ -259,6 +330,14 @@
         private System.Windows.Forms.CheckBox ButConnect;
         private System.ComponentModel.BackgroundWorker getStatus;
         private System.ComponentModel.BackgroundWorker Asker;
+        private System.Windows.Forms.Timer getStatusTimer;
+        private System.Windows.Forms.Timer AskerTimer;
+        private System.Windows.Forms.ListBox listBoxLog;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button ButLog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button1;
 
     }
 }

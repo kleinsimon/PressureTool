@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -19,6 +20,11 @@ namespace PressureTool
         public const string NAK = "\u0015";
         public const string CR = "\u000d";
         public const string LF = "\u000a";
+        private int debugLevel = 3;
+        private bool logging = false;
+        private string logFile;
+        private FileStream logFileStream;
+        private StreamWriter logFileWriter;
 
         private double _cP;
         private double currentPressure
@@ -52,34 +58,34 @@ namespace PressureTool
 
             BoxComPorts.DataSource = SerialPort.GetPortNames();
             BoxBaud.DataSource = new int[] { 9600, 19200, 38400 };
-        }
 
-        void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
             try
             {
-                getAnswer(Port.ReadLine());
+                debugMSG(Properties.Settings.Default.BaudRate,0);
+                BoxBaud.Text = Properties.Settings.Default.BaudRate;
+                BoxComPorts.Text = Properties.Settings.Default.ComPort;
             }
-            catch (TimeoutException) { }
+            catch { }
         }
 
         private void getAnswer(string Answer)
         {
-            //setText(Answer);
             Answer = Answer.Replace(CR, string.Empty);
             Answer = Answer.Replace(LF, string.Empty);
 
             if (Answer.Contains(NAK))
             {
+                debugMSG("NAK recieved", 3);
                 lastQuestion = Questions.NULL;
                 QuestionSent = QuestionACK = ENQSent = false;
                 AwaitingAnswer = false;
-                //TODO ERROR
                 return;
             }
             else if (QuestionSent && !QuestionACK && Answer.Contains(ACK))
             {
+                debugMSG("ACK Recieved", 3);
                 Port.WriteLine(ENQ);
+                debugMSG("ENQ Sent", 3);
                 QuestionACK=true;
                 ENQSent = true;
                 return;
@@ -89,9 +95,10 @@ namespace PressureTool
                 if (lastQuestion != Questions.COM) AwaitingAnswer = false;
                 if (lastQuestion != Questions.NULL)
                 {
-                    if (Regex.IsMatch(Answer,serialInterface.Answers[lastQuestion].RegexAnswer))
+                    if (Regex.IsMatch(Answer, serialInterface.Answers[lastQuestion].RegexAnswer))
                     {
                         parseAnswer(Answer, lastQuestion);
+                        debugMSG("REC:\t" + Answer, 3);
                         if (lastQuestion != Questions.COM)
                         {
                             QuestionSent = QuestionACK = ENQSent = false;
@@ -100,8 +107,12 @@ namespace PressureTool
                     }
                     else
                     {
-                        //TODO Unexpected Answer
+                        debugMSG("Unexpected Answer: " + Answer, 1);
                     }
+                }
+                else
+                {
+                    debugMSG("Answer to no Question: " + Answer, 1);
                 }
             }
         }
@@ -123,23 +134,47 @@ namespace PressureTool
                     TXTmes1SP1.Visible = (res[0] == "1") ? true : false;
                     TXTmes1SP2.Visible = (res[1] == "1") ? true : false;
                         break;
-            }
-        }
 
-        private void setText(string text)
-        {
-            TXTcurPressure.Text += text;
+                case Questions.DGS:
+                    TXTmes1Degas.Visible= (res[0] == "1") ? true : false;
+                        break;
+
+                case Questions.UNI:
+                    TXTUnit.Text = (res[0] == "0") ? "mbar" : (res[0] == "1") ? "Torr" : "Pa";
+                        break;
+
+                case Questions.OFC:
+                    TXTmes1Offset.Visible = (res[0] == "0") ? false : true;
+                        break;
+
+                case Questions.CAL:
+                    TXTmes1Calib.Visible = (res[0] != "1.000") ? true : false;
+                        break;
+
+                case Questions.COM:
+                            txtMes1On.Visible = (res[0] == "0") ? true : false;
+                            string[] Pc = res[1].Split('E');
+                            TXTcurPressure.Text = Pc[0];
+                            TXTcurPressureExp.Text = Pc[1];
+                            if (logging && logFileStream != null) 
+                                logFileWriter.WriteLine(DateTime.Today.ToString() + "\t" + res[1]);
+                        break;
+
+                case Questions.ERR:
+                    TXTError.Visible = (res[0] == "0000") ? false : true;
+                    toolTip1.SetToolTip(TXTError,(res[0]=="1000") ? "ERROR" : (res[0]=="0100") ? "Hardware nicht installiert" : (res[0]=="0010") ? "Unerlaubter Parameter" : (res[0]=="0001") ? "Falsche Syntax" : "");
+                        break;
+
+                default:
+                        debugMSG("Answer not implemented: " + Question.ToString(), 1);
+                        break;
+            }
         }
 
         private void sendQuestion(Questions Question, string[] Parameter = null)
         {
             if (!Port.IsOpen) return;
             OutputBuffer.Enqueue(new KeyValuePair<Questions, string[]>(Question, Parameter));
-        }
-
-        private void getPresure_Click(object sender, EventArgs e)
-        {
-            sendQuestion(Questions.PRX);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -151,45 +186,93 @@ namespace PressureTool
             catch { }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            sendQuestion(Questions.COM,new string[] {"1"});
+            try
+            {
+                getAnswer(Port.ReadLine());
+            }
+            catch (TimeoutException)
+            {
+                debugMSG("Timeout recieving Answer", 2);
+            }
         }
-
 
         private void ButConnect_CheckedChanged(object sender, EventArgs e)
         {
             if (ButConnect.Checked)
             {
-                Port = new SerialPort();
-                Port.PortName = BoxComPorts.Text;
-                Port.BaudRate = int.Parse(BoxBaud.Text);
-                Port.Parity = Parity.None;
-                Port.StopBits = StopBits.One;
-                Port.DataBits = 8;
-                Port.Handshake = Handshake.None;
-                Port.Open();
-                Port.DataReceived += new SerialDataReceivedEventHandler(Port_DataReceived);
-                ButConnect.Text = "Connected";
+                try
+                {
+                    Port = new SerialPort();
+                    Port.PortName = BoxComPorts.Text;
+                    Port.BaudRate = int.Parse(BoxBaud.Text);
+                    Port.Parity = Parity.None;
+                    Port.StopBits = StopBits.One;
+                    Port.DataBits = 8;
+                    Port.Handshake = Handshake.None;
+                    Port.Open();
+                    Port.DataReceived += new SerialDataReceivedEventHandler(Port_DataReceived);
+                    Port.ErrorReceived += new SerialErrorReceivedEventHandler(Port_ErrorReceived);
+                    ButConnect.Text = "Connected";
+                    debugMSG("Connected to " + Port.PortName + " with baud " + Port.BaudRate.ToString(), 1);
+                    sendQuestion(Questions.SPS);
+                    sendQuestion(Questions.SPS);
+                    sendQuestion(Questions.DGS);
+                    sendQuestion(Questions.UNI);
+                    sendQuestion(Questions.OFC);
+                    sendQuestion(Questions.CAL);
+                    //sendQuestion(Questions.PRX);
+                    sendQuestion(Questions.ERR);
+                    sendQuestion(Questions.COM, new string[] { "1" });
+
+                    //Asker.RunWorkerAsync();
+                    //getStatus.RunWorkerAsync();
+                    //getStatusTimer.Start();
+                    AskerTimer.Start();
+                }
+                catch
+                {
+                    debugMSG("Port could not be opened", 1);
+                    ButConnect.Checked = false;
+                }
             }
             else
             {
-                OutputBuffer.Clear();
-                Port.Close();
-                Port.Dispose();
-                Port = null;
-                ButConnect.Text = "Connect";
+                try
+                {
+                    OutputBuffer.Clear();
+                    Port.Close();
+                    Port.Dispose();
+                    Port = null;
+                    ButConnect.Text = "Connect";
+                    debugMSG("Disconnected", 1);
+                    getStatusTimer.Stop();
+                    AskerTimer.Stop();
+                    //Asker.CancelAsync();
+                    //getStatus.CancelAsync();
+                }
+                catch { }
             }
+        }
+
+        void Port_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        {
+            debugMSG(e.EventType.ToString(), 1);
         }
 
         private void getStatus_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (logging) return;
+            if (OutputBuffer.Count > 0) return;
             sendQuestion(Questions.SPS);
             sendQuestion(Questions.DGS);
             sendQuestion(Questions.UNI);
             sendQuestion(Questions.OFC);
             sendQuestion(Questions.CAL);
-            sendQuestion(Questions.PRX);
+            //sendQuestion(Questions.PRX);
+            sendQuestion(Questions.ERR);
+            sendQuestion(Questions.COM, new string[] { "1" });
         }
 
         private void Asker_DoWork(object sender, DoWorkEventArgs e)
@@ -206,7 +289,7 @@ namespace PressureTool
                 {
                     if (Parameter.Length != Opts.numParameter)
                     {
-                        // ERROR
+                        debugMSG("Parameter count misfit", 1);
                         return;
                     }
                 }
@@ -214,13 +297,83 @@ namespace PressureTool
                 try
                 {
                     Port.WriteLine(Question.ToString() + ((Parameter != null) ? "," + String.Join(",", Parameter) : ""));
+                    debugMSG("Send: " + Question.ToString() + ((Parameter != null) ? "," + String.Join(",", Parameter) : ""), 2);
                     QuestionSent = true;
                     lastQuestion = Question;
                     if (Question == Questions.COM) QuestionSent = QuestionACK = ENQSent = true;
                     AwaitingAnswer = true;
                 }
-                catch (TimeoutException) { }
+                catch (TimeoutException) {
+                    debugMSG("Timout Sending",1);
+                }
             }
+        }
+
+        private void debugMSG(string Message, int Level)
+        {
+            if (Level <= debugLevel) listBoxLog.Items.Add(Message);
+        }
+
+        private void getStatusTimer_Tick(object sender, EventArgs e)
+        {
+            if (logging) return;
+            if (!getStatus.IsBusy) getStatus.RunWorkerAsync();
+        }
+
+        private void AskerTimer_Tick(object sender, EventArgs e)
+        {
+            if (logging) return;
+            if (!Asker.IsBusy) Asker.RunWorkerAsync();
+        }
+
+        private void ButLog_Click(object sender, EventArgs e)
+        {
+            if (logging) return;
+            saveFileDialog1.ShowDialog();
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            logFile = saveFileDialog1.FileName;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                if (logFile == string.Empty) checkBox1.Checked = false;
+                sendQuestion(Questions.COM, new string[] { "1" });
+                logging = true;
+                logFileStream = File.OpenWrite(logFile);
+                logFileWriter = new StreamWriter(logFileStream);
+                logFileWriter.WriteLine("Time\tPressure");
+                logFileWriter.WriteLine("None\t" + TXTUnit.Text);
+            }
+            else if (logging)
+            {
+                logging = false;
+                logFileWriter.Close();
+                logFileWriter.Dispose();
+                logFileStream.Close();
+                logFileStream.Dispose();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            sendQuestion(Questions.COM, new string[] { "1" });
+        }
+
+        private void BoxComPorts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.ComPort = BoxComPorts.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void BoxBaud_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.BaudRate = BoxBaud.Text;
+            Properties.Settings.Default.Save();
         }
     }
 }
