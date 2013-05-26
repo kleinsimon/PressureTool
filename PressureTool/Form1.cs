@@ -20,11 +20,10 @@ namespace PressureTool
         public const string NAK = "\u0015";
         public const string CR = "\u000d";
         public const string LF = "\u000a";
-        private int debugLevel = 3;
+        private int debugLevel = 1;
         private bool logging = false;
         private string logFile;
-        private FileStream logFileStream;
-        private StreamWriter logFileWriter;
+        private TextWriter logFileWriter;
 
         private double _cP;
         private double currentPressure
@@ -61,9 +60,8 @@ namespace PressureTool
 
             try
             {
-                debugMSG(Properties.Settings.Default.BaudRate,0);
                 BoxBaud.Text = Properties.Settings.Default.BaudRate;
-                BoxComPorts.Text = Properties.Settings.Default.ComPort;
+                BoxComPorts.Text= Properties.Settings.Default.ComPort;
             }
             catch { }
         }
@@ -92,7 +90,7 @@ namespace PressureTool
             }
             else if (QuestionSent && QuestionACK && ENQSent)
             {
-                if (lastQuestion != Questions.COM) AwaitingAnswer = false;
+                 AwaitingAnswer = false;
                 if (lastQuestion != Questions.NULL)
                 {
                     if (Regex.IsMatch(Answer, serialInterface.Answers[lastQuestion].RegexAnswer))
@@ -156,8 +154,11 @@ namespace PressureTool
                             string[] Pc = res[1].Split('E');
                             TXTcurPressure.Text = Pc[0];
                             TXTcurPressureExp.Text = Pc[1];
-                            if (logging && logFileStream != null) 
-                                logFileWriter.WriteLine(DateTime.Today.ToString() + "\t" + res[1]);
+                            if (logging && logFileWriter != null)
+                            {
+                                logFileWriter.WriteLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
+                                logFileWriter.Flush();
+                            }
                         break;
 
                 case Questions.ERR:
@@ -179,6 +180,9 @@ namespace PressureTool
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Properties.Settings.Default.ComPort = BoxComPorts.Text;
+            Properties.Settings.Default.BaudRate = BoxBaud.Text;
+            Properties.Settings.Default.Save();
             try
             {
                 Port.Close();
@@ -216,19 +220,8 @@ namespace PressureTool
                     Port.ErrorReceived += new SerialErrorReceivedEventHandler(Port_ErrorReceived);
                     ButConnect.Text = "Connected";
                     debugMSG("Connected to " + Port.PortName + " with baud " + Port.BaudRate.ToString(), 1);
-                    sendQuestion(Questions.SPS);
-                    sendQuestion(Questions.SPS);
-                    sendQuestion(Questions.DGS);
-                    sendQuestion(Questions.UNI);
-                    sendQuestion(Questions.OFC);
-                    sendQuestion(Questions.CAL);
-                    //sendQuestion(Questions.PRX);
-                    sendQuestion(Questions.ERR);
-                    sendQuestion(Questions.COM, new string[] { "1" });
-
-                    //Asker.RunWorkerAsync();
-                    //getStatus.RunWorkerAsync();
-                    //getStatusTimer.Start();
+                    getStatusTimer.Start();
+                    getStatus.RunWorkerAsync();
                     AskerTimer.Start();
                 }
                 catch
@@ -266,13 +259,14 @@ namespace PressureTool
             if (logging) return;
             if (OutputBuffer.Count > 0) return;
             sendQuestion(Questions.SPS);
+            sendQuestion(Questions.SPS);
             sendQuestion(Questions.DGS);
             sendQuestion(Questions.UNI);
             sendQuestion(Questions.OFC);
             sendQuestion(Questions.CAL);
             //sendQuestion(Questions.PRX);
             sendQuestion(Questions.ERR);
-            sendQuestion(Questions.COM, new string[] { "1" });
+            sendQuestion(Questions.COM, new string[] { "0" });
         }
 
         private void Asker_DoWork(object sender, DoWorkEventArgs e)
@@ -311,7 +305,13 @@ namespace PressureTool
 
         private void debugMSG(string Message, int Level)
         {
-            if (Level <= debugLevel) listBoxLog.Items.Add(Message);
+            if (Level <= debugLevel)
+            {
+                textBox1.Text += Message + Environment.NewLine;
+
+                textBox1.SelectionStart = textBox1.Text.Length;
+                textBox1.ScrollToCaret();
+            }
         }
 
         private void getStatusTimer_Tick(object sender, EventArgs e)
@@ -322,7 +322,7 @@ namespace PressureTool
 
         private void AskerTimer_Tick(object sender, EventArgs e)
         {
-            if (logging) return;
+            //if (logging) return;
             if (!Asker.IsBusy) Asker.RunWorkerAsync();
         }
 
@@ -335,45 +335,33 @@ namespace PressureTool
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             logFile = saveFileDialog1.FileName;
+            checkBox1.Enabled = true;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                if (logFile == string.Empty) checkBox1.Checked = false;
+                if (logFile == string.Empty)
+                {
+                    checkBox1.Checked = false;
+                    return;
+                }
+                OutputBuffer.Clear();
                 sendQuestion(Questions.COM, new string[] { "1" });
                 logging = true;
-                logFileStream = File.OpenWrite(logFile);
-                logFileWriter = new StreamWriter(logFileStream);
+                logFileWriter = new StreamWriter(logFile);
                 logFileWriter.WriteLine("Time\tPressure");
                 logFileWriter.WriteLine("None\t" + TXTUnit.Text);
+                checkBox1.Text = "Logging";
             }
             else if (logging)
             {
+                checkBox1.Text = "Start Log";
                 logging = false;
                 logFileWriter.Close();
                 logFileWriter.Dispose();
-                logFileStream.Close();
-                logFileStream.Dispose();
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            sendQuestion(Questions.COM, new string[] { "1" });
-        }
-
-        private void BoxComPorts_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.ComPort = BoxComPorts.Text;
-            Properties.Settings.Default.Save();
-        }
-
-        private void BoxBaud_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.BaudRate = BoxBaud.Text;
-            Properties.Settings.Default.Save();
         }
     }
 }
