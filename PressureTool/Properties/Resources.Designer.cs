@@ -60,6 +60,13 @@ namespace PressureTool.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap down {
+            get {
+                object obj = ResourceManager.GetObject("down", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Gear {
             get {
                 object obj = ResourceManager.GetObject("Gear", resourceCulture);
@@ -98,6 +105,13 @@ namespace PressureTool.Properties {
         internal static System.Drawing.Bitmap StopHS {
             get {
                 object obj = ResourceManager.GetObject("StopHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap up {
+            get {
+                object obj = ResourceManager.GetObject("up", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

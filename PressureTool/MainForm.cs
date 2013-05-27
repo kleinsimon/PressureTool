@@ -20,6 +20,7 @@ namespace PressureTool
         public const string NAK = "\u0015";
         public const string CR = "\u000d";
         public const string LF = "\u000a";
+        private int oldHeight;
         private int debugLevel = 1;
         private bool logging = false;
         private string logFile;
@@ -394,6 +395,75 @@ namespace PressureTool
                 logFileWriter.Close();
                 logFileWriter.Dispose();
             }
+        }
+
+        private void PanelHideButton_Click(object sender, EventArgs e)
+        {
+            this.SuspendLayout();
+            SuspendUpdate.Suspend(this);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            if (!splitContainer1.Panel2Collapsed)
+            {
+                int height = splitContainer1.Panel1.Height;
+                oldHeight = splitContainer1.Height;
+                splitContainer1.Height = height;
+                splitContainer1.Panel2Collapsed = true;
+                PanelHideButton.Image = Properties.Resources.down;
+            }
+            else
+            {
+                splitContainer1.Panel2Collapsed = false;
+                splitContainer1.Height = oldHeight;
+                PanelHideButton.Image = Properties.Resources.up;
+            }
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            SuspendUpdate.Resume(this);
+            this.ResumeLayout();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            if (splitContainer1.Panel2Collapsed)
+            {
+                PanelHideButton.Image = Properties.Resources.down;
+            }
+            else
+            {
+                PanelHideButton.Image = Properties.Resources.up;
+            }
+        }
+
+        private void ConfigButton_Click(object sender, EventArgs e)
+        {
+            Settings bla = new Settings();
+            bla.Show();
+        }
+    }
+
+    public static class SuspendUpdate
+    {
+        private const int WM_SETREDRAW = 0x000B;
+
+        public static void Suspend(Control control)
+        {
+            Message msgSuspendUpdate = Message.Create(control.Handle, WM_SETREDRAW, IntPtr.Zero,
+                IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgSuspendUpdate);
+        }
+
+        public static void Resume(Control control)
+        {
+            // Create a C "true" boolean as an IntPtr
+            IntPtr wparam = new IntPtr(1);
+            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
+                IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgResumeUpdate);
+
+            control.Invalidate();
         }
     }
 }
