@@ -42,6 +42,8 @@
             this.TXTUnit = new System.Windows.Forms.Label();
             this.TXTcurPressureExp = new System.Windows.Forms.Label();
             this.TXTcurPressure = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.ConfigButton = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -88,6 +90,8 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.button2);
+            this.splitContainer1.Panel2.Controls.Add(this.button1);
             this.splitContainer1.Panel2.Controls.Add(this.ConfigButton);
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
             this.splitContainer1.Panel2.Controls.Add(this.checkBox1);
@@ -222,6 +226,26 @@
             this.TXTcurPressure.TabIndex = 20;
             this.TXTcurPressure.Text = "1.0000";
             this.TXTcurPressure.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(266, 45);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 44;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(266, 33);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 43;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ConfigButton
             // 
@@ -367,6 +391,8 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.PictureBox PanelHideButton;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
 
 
     }

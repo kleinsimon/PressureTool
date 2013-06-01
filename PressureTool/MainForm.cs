@@ -26,19 +26,7 @@ namespace PressureTool
         private string logFile;
         private TextWriter logFileWriter;
         private bool AnswerRecieved = false;
-
-        private double _cP;
-        private double currentPressure
-        {
-            get
-            {
-                return _cP;
-            }
-            set
-            {
-                _cP = value;
-            }
-        }
+        private SerialChart ChartWindow;
 
         private Questions lastQuestion = Questions.NULL;
         private Queue<KeyValuePair<Questions, string[]>> OutputBuffer = new Queue<KeyValuePair<Questions, string[]>>();
@@ -163,6 +151,11 @@ namespace PressureTool
                             if (logging && logFileWriter != null)
                             {
                                 logFileWriter.WriteLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
+                                try
+                                {
+                                    AddToChart(DateTime.Now, double.Parse(res[1]));
+                                }
+                                catch { }
                                 logFileWriter.Flush();
                             }
                         break;
@@ -364,6 +357,7 @@ namespace PressureTool
             logFile = saveFileDialog1.FileName;
             ButLog.Image = Properties.Resources.OK;
             checkBox1.Enabled = true;
+            startChart();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -437,6 +431,31 @@ namespace PressureTool
         {
             Settings bla = new Settings();
             bla.Show();
+        }
+
+        private void startChart()
+        {
+            ChartWindow = new SerialChart();
+            ChartWindow.Show();
+            //ChartWindow.chart1.Series[0].XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            //ChartWindow.chart1.Series[0].YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+        }
+
+        private void AddToChart(DateTime Time, double Value)
+        {
+            ChartWindow.chart1.Series[0].Points.AddXY(Time, Value);
+            ChartWindow.chart1.Update();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            startChart();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Random r = new Random();
+            AddToChart(DateTime.Now, r.NextDouble() * 1e-4d);
         }
     }
 
