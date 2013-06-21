@@ -95,13 +95,6 @@ namespace PressureTool.Properties {
             }
         }
         
-        internal static System.Drawing.Icon performance {
-            get {
-                object obj = ResourceManager.GetObject("performance", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap RecordHS {
             get {
                 object obj = ResourceManager.GetObject("RecordHS", resourceCulture);

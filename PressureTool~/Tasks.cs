@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace PressureTool
 {
-    public enum Questions
+    enum Questions
     {
         ADC,
         BAU,

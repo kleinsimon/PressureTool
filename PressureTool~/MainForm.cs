@@ -20,39 +20,31 @@ namespace PressureTool
         public const string NAK = "\u0015";
         public const string CR = "\u000d";
         public const string LF = "\u000a";
-
-        public string LogSpeed = "1";
-        public string DisplaySpeed = "1";
-        public bool connectOnStart = false;
-
         private int oldHeight;
-        public int debugLevel = 1;
+        private int debugLevel = 1;
         private bool logging = false;
         private string logFile;
         private TextWriter logFileWriter;
         private bool AnswerRecieved = false;
+        private SerialChart ChartWindow;
 
         private Questions lastQuestion = Questions.NULL;
         private Queue<KeyValuePair<Questions, string[]>> OutputBuffer = new Queue<KeyValuePair<Questions, string[]>>();
-        public System.Globalization.NumberFormatInfo NumberFormat = null;
 
         public bool _continue = true;
         private bool QuestionSent = false;
         private bool QuestionACK = false;
         private bool ENQSent = false;
         private bool AwaitingAnswer = false;
-        private PressureChart ChartWindow;
-        private relais RelaisWindow;
-        private SerialPort Port = new SerialPort();
+
+        private SerialPort Port;
+        //private Thread ReadThreat = new Thread(Read
+        
 
         public MainForm()
         {
             InitializeComponent();
-            NumberFormat = (System.Globalization.NumberFormatInfo) System.Globalization.CultureInfo.InstalledUICulture.NumberFormat.Clone();
-            NumberFormat.NumberDecimalSeparator = ".";
-            NumberFormat.NumberGroupSeparator = "";
 
-            //ChartWindow.Show();
             BoxComPorts.DataSource = SerialPort.GetPortNames();
             BoxBaud.DataSource = new int[] { 9600, 19200, 38400 };
 
@@ -60,14 +52,8 @@ namespace PressureTool
             {
                 BoxBaud.Text = Properties.Settings.Default.BaudRate;
                 BoxComPorts.Text= Properties.Settings.Default.ComPort;
-                DisplaySpeed = Properties.Settings.Default.DisplaySpeed;
-                LogSpeed = Properties.Settings.Default.LogSpeed;
-                connectOnStart = Properties.Settings.Default.ConnectOnStart;
             }
             catch { }
-
-            if (connectOnStart)
-                ConnectionWatchDog.Start();
         }
 
         private void getAnswer(string Answer)
@@ -81,7 +67,6 @@ namespace PressureTool
                 lastQuestion = Questions.NULL;
                 QuestionSent = QuestionACK = ENQSent = false;
                 AwaitingAnswer = false;
-                if (!Asker.IsBusy) Asker.RunWorkerAsync();
                 return;
             }
             else if (Answer.Contains(ACK))
@@ -119,7 +104,6 @@ namespace PressureTool
                 else
                 {
                     debugMSG("Answer to no Question: " + Answer, 1);
-                    if (!Asker.IsBusy) Asker.RunWorkerAsync();
                 }
             }
         }
@@ -128,11 +112,10 @@ namespace PressureTool
         {
             string[] res = Answer.Split(',');
             AnswerRecieved = true;
-            if (!Asker.IsBusy) Asker.RunWorkerAsync();
             switch (Question)
             {
                 case Questions.PRX:
-                    txtMes1On.ForeColor = (res[0] == "0") ? Color.Yellow : Color.Gray;
+                    txtMes1On.Visible = (res[0] == "0") ? true : false;
                     //txtMes2On.Visible = (res[0] == "0") ? true : false;
                     string[] P = res[1].Split('E');
                     TXTcurPressure.Text = P[0];
@@ -140,12 +123,12 @@ namespace PressureTool
                         break;
                 
                 case Questions.SPS:
-                        TXTmes1SP1.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
-                        TXTmes1SP2.ForeColor = (res[1] == "1") ? Color.Yellow : Color.Gray;
+                    TXTmes1SP1.Visible = (res[0] == "1") ? true : false;
+                    TXTmes1SP2.Visible = (res[1] == "1") ? true : false;
                         break;
 
                 case Questions.DGS:
-                        TXTmes1Degas.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
+                    TXTmes1Degas.Visible= (res[0] == "1") ? true : false;
                         break;
 
                 case Questions.UNI:
@@ -153,11 +136,11 @@ namespace PressureTool
                         break;
 
                 case Questions.OFC:
-                        TXTmes1Offset.ForeColor = (res[0] == "0") ? Color.Gray : Color.Yellow;
+                    TXTmes1Offset.Visible = (res[0] == "0") ? false : true;
                         break;
 
                 case Questions.CAL:
-                        TXTmes1Calib.ForeColor = (res[0] != "1.000") ? Color.Yellow : Color.Gray;
+                    TXTmes1Calib.Visible = (res[0] != "1.000") ? true : false;
                         break;
 
                 case Questions.COM:
@@ -165,20 +148,14 @@ namespace PressureTool
                             string[] Pc = res[1].Split('E');
                             TXTcurPressure.Text = Pc[0];
                             TXTcurPressureExp.Text = Pc[1];
-                            if (ChartWindow != null)
-                            {
-                                try
-                                {
-                                    BeginInvoke(new Action(() =>
-                                    {
-                                        ChartWindow.AddToChart(DateTime.Now, double.Parse(res[1].Replace('.', ',')));
-                                    }));
-                                }
-                                catch { }
-                            }
                             if (logging && logFileWriter != null)
                             {
                                 logFileWriter.WriteLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
+                                try
+                                {
+                                    AddToChart(DateTime.Now, double.Parse(res[1]));
+                                }
+                                catch { }
                                 logFileWriter.Flush();
                             }
                         break;
@@ -188,59 +165,29 @@ namespace PressureTool
                     toolTip1.SetToolTip(TXTError,(res[0]=="1000") ? "ERROR" : (res[0]=="0100") ? "Hardware nicht installiert" : (res[0]=="0010") ? "Unerlaubter Parameter" : (res[0]=="0001") ? "Falsche Syntax" : "");
                         break;
 
-                case Questions.SP1:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 1);
-                        break;
-
-                case Questions.SP2:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 2);
-                        break;
-
-                case Questions.SP3:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 3);
-                        break;
-
-                case Questions.SP4:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 4);
-                        break;
-
                 default:
                         debugMSG("Answer not implemented: " + Question.ToString(), 1);
                         break;
             }
         }
 
-        public void sendQuestion(Questions Question, string[] Parameter = null)
+        private void sendQuestion(Questions Question, string[] Parameter = null)
         {
+            if (Port == null) return;
             if (!Port.IsOpen) return;
             OutputBuffer.Enqueue(new KeyValuePair<Questions, string[]>(Question, Parameter));
-
-            if (!Asker.IsBusy) Asker.RunWorkerAsync();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.ComPort = BoxComPorts.Text;
             Properties.Settings.Default.BaudRate = BoxBaud.Text;
-            Properties.Settings.Default.DisplaySpeed = DisplaySpeed;
-            Properties.Settings.Default.LogSpeed = LogSpeed;
-            Properties.Settings.Default.ConnectOnStart = connectOnStart;
             Properties.Settings.Default.Save();
-            sendQuestion(Questions.PRX);
             disconnect();
         }
 
         void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            debugMSG(e.EventType.ToString(), 3);
             try
             {
                 getAnswer(Port.ReadLine());
@@ -251,19 +198,11 @@ namespace PressureTool
             }
         }
 
-        private void startChart()
-        {
-            if (ChartWindow == null)
-                ChartWindow = new PressureChart(this);
-            ChartWindow.Show();
-        }
-
         private void connect()
         {
-            if (Port.IsOpen) return;
             try
             {
-                //Port = new SerialPort();
+                Port = new SerialPort();
                 Port.PortName = BoxComPorts.Text;
                 Port.BaudRate = int.Parse(BoxBaud.Text);
                 Port.Parity = Parity.None;
@@ -278,11 +217,9 @@ namespace PressureTool
                 ButConnect.Text = "Connected";
                 ButConnect.BackColor = Color.Green;
                 debugMSG("Connected to " + Port.PortName + " with baud " + Port.BaudRate.ToString(), 1);
-                AskerTimer.Start();
                 getStatusTimer.Start();
                 getStatus.RunWorkerAsync();
-                ConnectionWatchDog.Start();
-                //togglePanel();
+                AskerTimer.Start();
             }
             catch
             {
@@ -299,14 +236,14 @@ namespace PressureTool
                 OutputBuffer.Clear();
                 Port.Close();
                 Port.Dispose();
+                Port = null;
                 ButConnect.Text = "Connect";
                 ButConnect.BackColor = Color.Transparent;
                 debugMSG("Disconnected", 1);
                 getStatusTimer.Stop();
                 AskerTimer.Stop();
-                ConnectionWatchDog.Stop();
             }
-            catch { debugMSG("Port could not be closed", 1); }
+            catch { }
         }
 
         private void onTimeout()
@@ -319,18 +256,12 @@ namespace PressureTool
         {
             if (ButConnect.Checked)
             {
-                ConnectionWatchDog.Start();
+                connect();
             }
             else
             {
-                ConnectionWatchDog.Stop();
                 disconnect();
             }
-        }
-
-        public void onChartClosed()
-        {
-            BUTChart.Checked = false;
         }
 
         void Port_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
@@ -348,12 +279,13 @@ namespace PressureTool
             sendQuestion(Questions.UNI);
             sendQuestion(Questions.OFC);
             sendQuestion(Questions.CAL);
+            //sendQuestion(Questions.PRX);
             sendQuestion(Questions.ERR);
-            sendQuestion(Questions.COM, new string[] { DisplaySpeed });
+            sendQuestion(Questions.COM, new string[] { "0" });
         }
 
         private void Asker_DoWork(object sender, DoWorkEventArgs e)
-        {           
+        {
             if (OutputBuffer.Count > 0 && !AwaitingAnswer && Port.IsOpen)
             {
                 KeyValuePair<Questions, string[]> CurCommand = OutputBuffer.Dequeue();
@@ -384,19 +316,20 @@ namespace PressureTool
                     onTimeout();
                 }
             }
+            else if (!Port.IsOpen)
+            {
+                connect();
+            }
         }
 
         private void debugMSG(string Message, int Level)
         {
             if (Level <= debugLevel)
             {
-                BeginInvoke(new Action(() =>
-                {
-                    textBox1.Text += Message + Environment.NewLine;
+                textBox1.Text += Message + Environment.NewLine;
 
-                    textBox1.SelectionStart = textBox1.Text.Length;
-                    textBox1.ScrollToCaret();
-                }));
+                textBox1.SelectionStart = textBox1.Text.Length;
+                textBox1.ScrollToCaret();
             }
         }
 
@@ -421,10 +354,10 @@ namespace PressureTool
 
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            debugMSG("Log File set to " + saveFileDialog1.FileName, 1);
             logFile = saveFileDialog1.FileName;
             ButLog.Image = Properties.Resources.OK;
             checkBox1.Enabled = true;
+            startChart();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -437,7 +370,7 @@ namespace PressureTool
                     return;
                 }
                 OutputBuffer.Clear();
-                sendQuestion(Questions.COM, new string[] { LogSpeed });
+                sendQuestion(Questions.COM, new string[] { "1" });
                 logging = true;
                 logFileWriter = new StreamWriter(logFile);
                 logFileWriter.WriteLine("Time\tPressure");
@@ -446,8 +379,6 @@ namespace PressureTool
                 checkBox1.Text = "Logging";
                 checkBox1.BackColor = Color.Green;
                 checkBox1.Image = Properties.Resources.Gear;
-                startChart();
-                ChartWindow.clear();
             }
             else if (logging)
             {
@@ -461,11 +392,6 @@ namespace PressureTool
         }
 
         private void PanelHideButton_Click(object sender, EventArgs e)
-        {
-            togglePanel();
-        }
-
-        private void togglePanel()
         {
             this.SuspendLayout();
             SuspendUpdate.Suspend(this);
@@ -503,36 +429,33 @@ namespace PressureTool
 
         private void ConfigButton_Click(object sender, EventArgs e)
         {
-            Settings bla = new Settings(this);
+            Settings bla = new Settings();
             bla.Show();
         }
 
-        private void ConnectionWatchDog_Tick(object sender, EventArgs e)
+        private void startChart()
         {
-            if (!Port.IsOpen)
-            {
-                connect();
-            }
+            ChartWindow = new SerialChart();
+            ChartWindow.Show();
+            //ChartWindow.chart1.Series[0].XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            //ChartWindow.chart1.Series[0].YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
         }
 
-        private void BUTChart_CheckedChanged(object sender, EventArgs e)
+        private void AddToChart(DateTime Time, double Value)
         {
-            if (BUTChart.Checked)
-            {
-                startChart();
-                BUTChart.BackColor = Color.Yellow;
-            }
-            else
-            {
-                ChartWindow.Close();
-                BUTChart.BackColor = Color.Transparent;
-            }
+            ChartWindow.chart1.Series[0].Points.AddXY(Time, Value);
+            ChartWindow.chart1.Update();
         }
 
-        private void TXTmes1SP1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            RelaisWindow = new relais(this);
-            RelaisWindow.Show();
+            startChart();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Random r = new Random();
+            AddToChart(DateTime.Now, r.NextDouble() * 1e-4d);
         }
     }
 

@@ -9,11 +9,33 @@ using System.Windows.Forms;
 
 namespace PressureTool
 {
-    public partial class SerialChart : Form
+    public partial class PressureChart : Form
     {
-        public SerialChart()
+        private MainForm MainWindow = null;
+        public PressureChart(MainForm Parent)
         {
+            MainWindow = Parent;
             InitializeComponent();
+        }
+
+        public void AddToChart(DateTime Time, double Value)
+        {
+            if (!this.Visible) return;
+            chart1.Series[0].Points.AddXY(Time, Value);
+            chart1.Update();
+        }
+
+        public void clear()
+        {
+            chart1.Series[0].Points.Clear();
+            chart1.Update();
+        }
+
+        private void PressureChart_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
+            MainWindow.onChartClosed();
         }
     }
 }

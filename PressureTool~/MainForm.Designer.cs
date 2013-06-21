@@ -42,7 +42,8 @@
             this.TXTUnit = new System.Windows.Forms.Label();
             this.TXTcurPressureExp = new System.Windows.Forms.Label();
             this.TXTcurPressure = new System.Windows.Forms.Label();
-            this.BUTChart = new System.Windows.Forms.CheckBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.ConfigButton = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -56,7 +57,6 @@
             this.getStatus = new System.ComponentModel.BackgroundWorker();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.ConnectionWatchDog = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -66,8 +66,8 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
@@ -90,7 +90,8 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.BUTChart);
+            this.splitContainer1.Panel2.Controls.Add(this.button2);
+            this.splitContainer1.Panel2.Controls.Add(this.button1);
             this.splitContainer1.Panel2.Controls.Add(this.ConfigButton);
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
             this.splitContainer1.Panel2.Controls.Add(this.checkBox1);
@@ -172,7 +173,6 @@
             // TXTmes1SP2
             // 
             this.TXTmes1SP2.BackColor = System.Drawing.Color.Black;
-            this.TXTmes1SP2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.TXTmes1SP2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TXTmes1SP2.ForeColor = System.Drawing.Color.Yellow;
             this.TXTmes1SP2.Location = new System.Drawing.Point(291, 132);
@@ -180,12 +180,10 @@
             this.TXTmes1SP2.Size = new System.Drawing.Size(46, 19);
             this.TXTmes1SP2.TabIndex = 24;
             this.TXTmes1SP2.Text = "SP2";
-            this.TXTmes1SP2.Click += new System.EventHandler(this.TXTmes1SP1_Click);
             // 
             // TXTmes1SP1
             // 
             this.TXTmes1SP1.BackColor = System.Drawing.Color.Black;
-            this.TXTmes1SP1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.TXTmes1SP1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TXTmes1SP1.ForeColor = System.Drawing.Color.Yellow;
             this.TXTmes1SP1.Location = new System.Drawing.Point(243, 132);
@@ -193,7 +191,6 @@
             this.TXTmes1SP1.Size = new System.Drawing.Size(46, 19);
             this.TXTmes1SP1.TabIndex = 23;
             this.TXTmes1SP1.Text = "SP1";
-            this.TXTmes1SP1.Click += new System.EventHandler(this.TXTmes1SP1_Click);
             // 
             // TXTUnit
             // 
@@ -223,24 +220,32 @@
             this.TXTcurPressure.BackColor = System.Drawing.Color.Black;
             this.TXTcurPressure.Font = new System.Drawing.Font("Arial", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TXTcurPressure.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.TXTcurPressure.Location = new System.Drawing.Point(3, 53);
+            this.TXTcurPressure.Location = new System.Drawing.Point(16, 53);
             this.TXTcurPressure.Name = "TXTcurPressure";
-            this.TXTcurPressure.Size = new System.Drawing.Size(347, 74);
+            this.TXTcurPressure.Size = new System.Drawing.Size(244, 74);
             this.TXTcurPressure.TabIndex = 20;
-            this.TXTcurPressure.Text = "8.8888";
-            this.TXTcurPressure.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.TXTcurPressure.Text = "1.0000";
+            this.TXTcurPressure.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // BUTChart
+            // button2
             // 
-            this.BUTChart.Appearance = System.Windows.Forms.Appearance.Button;
-            this.BUTChart.Image = ((System.Drawing.Image)(resources.GetObject("BUTChart.Image")));
-            this.BUTChart.Location = new System.Drawing.Point(266, 143);
-            this.BUTChart.Name = "BUTChart";
-            this.BUTChart.Size = new System.Drawing.Size(32, 23);
-            this.BUTChart.TabIndex = 43;
-            this.BUTChart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.BUTChart.UseVisualStyleBackColor = true;
-            this.BUTChart.CheckedChanged += new System.EventHandler(this.BUTChart_CheckedChanged);
+            this.button2.Location = new System.Drawing.Point(266, 45);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 44;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(266, 33);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 43;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ConfigButton
             // 
@@ -259,7 +264,6 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size(248, 131);
             this.textBox1.TabIndex = 41;
             // 
@@ -276,7 +280,6 @@
             this.checkBox1.Text = "Log...";
             this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
             this.checkBox1.Click += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // ButLog
@@ -325,31 +328,15 @@
             // getStatusTimer
             // 
             this.getStatusTimer.Interval = 10000;
-            this.getStatusTimer.Tick += new System.EventHandler(this.getStatusTimer_Tick);
-            // 
-            // Asker
-            // 
-            this.Asker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.Asker_DoWork);
             // 
             // AskerTimer
             // 
-            this.AskerTimer.Interval = 5000;
-            this.AskerTimer.Tick += new System.EventHandler(this.AskerTimer_Tick);
-            // 
-            // getStatus
-            // 
-            this.getStatus.DoWork += new System.ComponentModel.DoWorkEventHandler(this.getStatus_DoWork);
+            this.AskerTimer.Interval = 3;
             // 
             // saveFileDialog1
             // 
             this.saveFileDialog1.Filter = "txt-Datei|*.txt";
             this.saveFileDialog1.RestoreDirectory = true;
-            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
-            // 
-            // ConnectionWatchDog
-            // 
-            this.ConnectionWatchDog.Interval = 1000;
-            this.ConnectionWatchDog.Tick += new System.EventHandler(this.ConnectionWatchDog_Tick);
             // 
             // MainForm
             // 
@@ -404,8 +391,8 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.PictureBox PanelHideButton;
-        private System.Windows.Forms.Timer ConnectionWatchDog;
-        private System.Windows.Forms.CheckBox BUTChart;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
 
 
     }

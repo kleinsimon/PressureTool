@@ -118,17 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="BUTChart.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADrwAAA68AZW8ckkAAAEESURBVDhPxZOxEcIwEARVD01QhWNKcSlkBGrCjhmHDpmh
-        BecE4u74k2XjiISfOf5lve5XHpP+H+NjLLf7UvY5D/k4X7NqZShNU1njGZnhmvm1lJkZYrZOl66IoAYa
-        HTrAg1HPmEbZTAZnGBDLD1rRuGYgz30HZa0pkouA99FkY7IOE+GzRqOMYCCS2BeBDBg24DQcqLhG5x6m
-        imRj0DhWVGfuIROXBLpuUHBdDRQx2dhCJsmwvo86hM9Rfwx8r5jEDaK3dT0M6Tn7IRkINRzbJk5t0Zld
-        873xTAel3lfAJDZ4ogmOaq1NIINdo818aF/bRAb84QexyaGuqb8UvfGX+jVSegNl1qNBo0aUQwAAAABJ
-        RU5ErkJggg==
-</value>
-  </data>
   <data name="ConfigButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
@@ -145,25 +134,22 @@
 </value>
   </data>
   <metadata name="getStatusTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>310, 19</value>
+    <value>681, 17</value>
   </metadata>
   <metadata name="Asker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>444, 19</value>
+    <value>815, 17</value>
   </metadata>
   <metadata name="AskerTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>526, 19</value>
+    <value>897, 17</value>
   </metadata>
   <metadata name="getStatus.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>638, 19</value>
+    <value>1009, 17</value>
   </metadata>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>741, 19</value>
+    <value>1112, 17</value>
   </metadata>
   <metadata name="saveFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>145, 19</value>
-  </metadata>
-  <metadata name="ConnectionWatchDog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>838, 19</value>
+    <value>17, 56</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

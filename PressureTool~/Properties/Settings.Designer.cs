@@ -46,41 +46,5 @@ namespace PressureTool.Properties {
                 this["BaudRate"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public string LogSpeed {
-            get {
-                return ((string)(this["LogSpeed"]));
-            }
-            set {
-                this["LogSpeed"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public string DisplaySpeed {
-            get {
-                return ((string)(this["DisplaySpeed"]));
-            }
-            set {
-                this["DisplaySpeed"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ConnectOnStart {
-            get {
-                return ((bool)(this["ConnectOnStart"]));
-            }
-            set {
-                this["ConnectOnStart"] = value;
-            }
-        }
     }
 }
