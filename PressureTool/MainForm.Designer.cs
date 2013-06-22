@@ -45,7 +45,7 @@
             this.BUTChart = new System.Windows.Forms.CheckBox();
             this.ConfigButton = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.ButLogStart = new System.Windows.Forms.CheckBox();
             this.ButLog = new System.Windows.Forms.Button();
             this.ButConnect = new System.Windows.Forms.CheckBox();
             this.BoxComPorts = new System.Windows.Forms.ComboBox();
@@ -66,8 +66,8 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
@@ -93,7 +93,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.BUTChart);
             this.splitContainer1.Panel2.Controls.Add(this.ConfigButton);
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-            this.splitContainer1.Panel2.Controls.Add(this.checkBox1);
+            this.splitContainer1.Panel2.Controls.Add(this.ButLogStart);
             this.splitContainer1.Panel2.Controls.Add(this.ButLog);
             this.splitContainer1.Panel2.Controls.Add(this.ButConnect);
             this.splitContainer1.Panel2.Controls.Add(this.BoxComPorts);
@@ -263,28 +263,27 @@
             this.textBox1.Size = new System.Drawing.Size(248, 131);
             this.textBox1.TabIndex = 41;
             // 
-            // checkBox1
+            // ButLogStart
             // 
-            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox1.Enabled = false;
-            this.checkBox1.Image = global::PressureTool.Properties.Resources.RecordHS;
-            this.checkBox1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.checkBox1.Location = new System.Drawing.Point(266, 103);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(75, 23);
-            this.checkBox1.TabIndex = 40;
-            this.checkBox1.Text = "Log...";
-            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
-            this.checkBox1.Click += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.ButLogStart.Appearance = System.Windows.Forms.Appearance.Button;
+            this.ButLogStart.Enabled = false;
+            this.ButLogStart.Image = global::PressureTool.Properties.Resources.RecordHS;
+            this.ButLogStart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ButLogStart.Location = new System.Drawing.Point(266, 64);
+            this.ButLogStart.Name = "ButLogStart";
+            this.ButLogStart.Size = new System.Drawing.Size(75, 23);
+            this.ButLogStart.TabIndex = 40;
+            this.ButLogStart.Text = "Log...";
+            this.ButLogStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ButLogStart.UseVisualStyleBackColor = true;
+            this.ButLogStart.Click += new System.EventHandler(this.ButLogStart_Clicked);
             // 
             // ButLog
             // 
             this.ButLog.BackColor = System.Drawing.Color.Transparent;
             this.ButLog.Image = global::PressureTool.Properties.Resources.openfolderHS;
             this.ButLog.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ButLog.Location = new System.Drawing.Point(266, 74);
+            this.ButLog.Location = new System.Drawing.Point(266, 35);
             this.ButLog.Name = "ButLog";
             this.ButLog.Size = new System.Drawing.Size(75, 23);
             this.ButLog.TabIndex = 39;
@@ -392,7 +391,7 @@
         private System.Windows.Forms.Label TXTcurPressure;
         private System.Windows.Forms.Button ConfigButton;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox ButLogStart;
         private System.Windows.Forms.Button ButLog;
         private System.Windows.Forms.CheckBox ButConnect;
         private System.Windows.Forms.ComboBox BoxComPorts;

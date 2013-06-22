@@ -27,9 +27,35 @@ namespace PressureTool
 
         private int oldHeight;
         public int debugLevel = 1;
-        private bool logging = false;
-        private string logFile;
-        private TextWriter logFileWriter;
+
+        private DataLogger Log = new DataLogger();
+        private bool _logging = false;
+        private bool logging
+        {
+            get
+            {
+                return _logging;
+            }
+            set
+            {
+                _logging = value;
+                if (value)
+                {
+                    ButLogStart.Text = "Logging";
+                    ButLogStart.BackColor = Color.Green;
+                    ButLogStart.Image = Properties.Resources.Gear;
+                    ButLogStart.Checked = true;
+                }
+                else
+                {
+                    ButLogStart.Image = Properties.Resources.RecordHS;
+                    ButLogStart.Text = "Log...";
+                    ButLogStart.BackColor = Color.Transparent;
+                    ButLogStart.Checked = false;
+                }
+            }
+        }
+
         private bool AnswerRecieved = false;
 
         private Questions lastQuestion = Questions.NULL;
@@ -43,6 +69,7 @@ namespace PressureTool
         private bool AwaitingAnswer = false;
         private PressureChart ChartWindow;
         private relais RelaisWindow;
+        private LogOptions LogOptionWindow;
         private SerialPort Port = new SerialPort();
 
         public MainForm()
@@ -165,6 +192,8 @@ namespace PressureTool
                             string[] Pc = res[1].Split('E');
                             TXTcurPressure.Text = Pc[0];
                             TXTcurPressureExp.Text = Pc[1];
+                            //Log.addLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
+                            Log.addValues(DateTime.Now, double.Parse(res[1].Replace('.', ',')), double.Parse(res[3].Replace('.', ',')));
                             if (ChartWindow != null)
                             {
                                 try
@@ -175,11 +204,6 @@ namespace PressureTool
                                     }));
                                 }
                                 catch { }
-                            }
-                            if (logging && logFileWriter != null)
-                            {
-                                logFileWriter.WriteLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
-                                logFileWriter.Flush();
                             }
                         break;
 
@@ -286,7 +310,7 @@ namespace PressureTool
             }
             catch
             {
-                checkBox1.Checked = false;
+                ButLogStart.Checked = false;
                 debugMSG("Port could not be opened", 1);
                 ButConnect.Checked = false;
             }
@@ -422,42 +446,45 @@ namespace PressureTool
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             debugMSG("Log File set to " + saveFileDialog1.FileName, 1);
-            logFile = saveFileDialog1.FileName;
+            Log.logFile = saveFileDialog1.FileName;
             ButLog.Image = Properties.Resources.OK;
-            checkBox1.Enabled = true;
+            ButLogStart.Enabled = true;
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void ButLogStart_Clicked(object sender, EventArgs e)
         {
-            if (checkBox1.Checked)
+            if (!Port.IsOpen) return;
+            if (!logging)
             {
-                if (logFile == string.Empty)
-                {
-                    checkBox1.Checked = false;
-                    return;
-                }
-                OutputBuffer.Clear();
-                sendQuestion(Questions.COM, new string[] { LogSpeed });
-                logging = true;
-                logFileWriter = new StreamWriter(logFile);
-                logFileWriter.WriteLine("Time\tPressure");
-                logFileWriter.WriteLine("None\t" + TXTUnit.Text);
+                LogOptionWindow = new LogOptions(this);
+                LogOptionWindow.ShowDialog();
+            }
+            else
+            {
+                stopLogging();
+            }
+        }
+
+        public void startLogging(double duration, double minP1, double maxP1, double minP2, double maxP2)
+        {
+            if (Log.StartLogging(TXTUnit.Text, duration, minP1, maxP1, minP2, maxP2))
                 debugMSG("Logfile created, logging...", 1);
-                checkBox1.Text = "Logging";
-                checkBox1.BackColor = Color.Green;
-                checkBox1.Image = Properties.Resources.Gear;
-                startChart();
-                ChartWindow.clear();
-            }
-            else if (logging)
+            else
             {
-                checkBox1.Image = Properties.Resources.RecordHS;
-                checkBox1.Text = "Log...";
-                checkBox1.BackColor = Color.Transparent;
+                debugMSG("Logfile " + Log.logFile + " could not be created", 1);
                 logging = false;
-                logFileWriter.Close();
-                logFileWriter.Dispose();
+                return;
             }
+
+            startChart();
+            ChartWindow.clear();
+            OutputBuffer.Clear();
+            sendQuestion(Questions.COM, new string[] { LogSpeed });
+        }
+
+        private void stopLogging()
+        {
+            Log.stopLogging();
         }
 
         private void PanelHideButton_Click(object sender, EventArgs e)

@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace PressureTool
 {
+    public enum InputFormat
+    {
+        DoubleOrEmpty,
+        OnlyDouble,
+    }
+
     public enum Questions
     {
         ADC,
@@ -110,5 +117,86 @@ namespace PressureTool
         };
     }
 
-    
+    class DataLogger
+    {
+        public bool logging = false;
+        public string logFile;
+        private TextWriter logFileWriter;
+        private DateTime startTime;
+        private DateTime endTime;
+        private double minP1;
+        private double maxP1;
+        private double minP2;
+        private double maxP2;
+
+        public DataLogger()
+        {
+
+        }
+
+        public bool StartLogging(string Unit, double duration, double minPressure1, double maxPressure1, double minPressure2, double maxPressure2)
+        {
+            if (logFile == string.Empty) return false;
+
+            try
+            {
+                logging = true;
+                logFileWriter = new StreamWriter(logFile);
+                logFileWriter.WriteLine("Time\tPressure");
+                logFileWriter.WriteLine("None\t" + Unit);
+
+                startTime = DateTime.Now;
+                if (duration != 0)
+                    endTime = startTime.AddMinutes(duration);
+                else
+                    endTime = DateTime.MaxValue;
+                minP1 = minPressure1;
+                maxP1 = maxPressure1;
+                minP2 = minPressure2;
+                maxP2 = maxPressure2;
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
+        public void addLine(string Line)
+        {
+            if (!logging || logFileWriter == null) return;
+            logFileWriter.WriteLine(Line);
+            logFileWriter.Flush();
+        }
+
+        public void addValues(DateTime Time, double p1, double p2)
+        {
+            if (!logging || logFileWriter == null) return;
+
+            if (Time.CompareTo(endTime) > 0)
+            {
+                stopLogging();
+                return;
+            }
+            if (p1 > maxP1 || p1 < minP1)
+            {
+                stopLogging();
+                return;
+            }
+            if (p2 > maxP2 || p2 < minP2)
+            {
+                stopLogging();
+                return;
+            }
+
+            logFileWriter.WriteLine("{0}\t{1:00#E+00}\t{2:00#E+00}", Time, p1, p2);
+            logFileWriter.Flush();
+        }
+
+        public void stopLogging()
+        {
+            logging = false;
+            logFileWriter.Close();
+            logFileWriter.Dispose();
+        }
+    }
 }
