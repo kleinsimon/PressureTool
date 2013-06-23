@@ -12,6 +12,8 @@ namespace PressureTool
     public partial class PressureChart : Form
     {
         private MainForm MainWindow = null;
+        public bool Pause = false;
+
         public PressureChart(MainForm Parent)
         {
             MainWindow = Parent;
@@ -20,7 +22,7 @@ namespace PressureTool
 
         public void AddToChart(DateTime Time, double Value)
         {
-            if (!this.Visible) return;
+            if (!this.Visible || Pause) return;
             chart1.Series[0].Points.AddXY(Time, Value);
             chart1.Update();
         }

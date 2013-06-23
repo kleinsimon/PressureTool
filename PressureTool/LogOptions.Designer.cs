@@ -50,9 +50,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(35, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(270, 13);
+            this.label1.Size = new System.Drawing.Size(285, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Logging duration in minutes (Empty or Zero for unlimited)";
+            this.label1.Text = "Logging duration (DD:)HH:MM (Empty or Zero for unlimited)";
             // 
             // InputDuration
             // 
@@ -60,6 +60,7 @@
             this.InputDuration.Name = "InputDuration";
             this.InputDuration.Size = new System.Drawing.Size(55, 20);
             this.InputDuration.TabIndex = 1;
+            this.InputDuration.Text = "00:00";
             // 
             // label2
             // 
@@ -145,6 +146,7 @@
             // 
             // button1
             // 
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button1.Location = new System.Drawing.Point(132, 155);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);

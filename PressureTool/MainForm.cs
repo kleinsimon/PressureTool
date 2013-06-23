@@ -28,7 +28,7 @@ namespace PressureTool
         private int oldHeight;
         public int debugLevel = 1;
 
-        private DataLogger Log = new DataLogger();
+        private DataLogger Log;
         private bool _logging = false;
         private bool logging
         {
@@ -75,6 +75,7 @@ namespace PressureTool
         public MainForm()
         {
             InitializeComponent();
+            Log = new DataLogger(this);
             NumberFormat = (System.Globalization.NumberFormatInfo) System.Globalization.CultureInfo.InstalledUICulture.NumberFormat.Clone();
             NumberFormat.NumberDecimalSeparator = ".";
             NumberFormat.NumberGroupSeparator = "";
@@ -280,6 +281,8 @@ namespace PressureTool
             if (ChartWindow == null)
                 ChartWindow = new PressureChart(this);
             ChartWindow.Show();
+            ChartWindow.Pause = false;
+            
         }
 
         private void connect()
@@ -325,6 +328,7 @@ namespace PressureTool
                 Port.Dispose();
                 ButConnect.Text = "Connect";
                 ButConnect.BackColor = Color.Transparent;
+                ButConnect.Checked = false;
                 debugMSG("Disconnected", 1);
                 getStatusTimer.Stop();
                 AskerTimer.Stop();
@@ -364,6 +368,7 @@ namespace PressureTool
 
         private void getStatus_DoWork(object sender, DoWorkEventArgs e)
         {
+            debugMSG("Getting Status", 3);
             if (logging) return;
             if (OutputBuffer.Count > 0) return;
             sendQuestion(Questions.SPS);
@@ -461,14 +466,17 @@ namespace PressureTool
             }
             else
             {
-                stopLogging();
+                onStopLogging("Logging stopped by user");
             }
         }
 
-        public void startLogging(double duration, double minP1, double maxP1, double minP2, double maxP2)
+        public void startLogging(TimeSpan duration, double minP1, double maxP1, double minP2, double maxP2)
         {
             if (Log.StartLogging(TXTUnit.Text, duration, minP1, maxP1, minP2, maxP2))
+            {
                 debugMSG("Logfile created, logging...", 1);
+                logging = true;
+            }
             else
             {
                 debugMSG("Logfile " + Log.logFile + " could not be created", 1);
@@ -485,6 +493,18 @@ namespace PressureTool
         private void stopLogging()
         {
             Log.stopLogging();
+            logging = false;
+        }
+
+        public void onStopLogging(string Reason = "")
+        {
+            stopLogging();
+            debugMSG("Logging stopped. Reaseon: " + Reason, 0);
+            try
+            {
+                ChartWindow.Pause = true;
+            }
+            catch { }
         }
 
         private void PanelHideButton_Click(object sender, EventArgs e)
@@ -561,6 +581,7 @@ namespace PressureTool
             RelaisWindow = new relais(this);
             RelaisWindow.Show();
         }
+
     }
 
     public static class SuspendUpdate

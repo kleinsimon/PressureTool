@@ -128,13 +128,14 @@ namespace PressureTool
         private double maxP1;
         private double minP2;
         private double maxP2;
+        private MainForm MainWindow;
 
-        public DataLogger()
+        public DataLogger(MainForm Window)
         {
-
+            MainWindow = Window;
         }
 
-        public bool StartLogging(string Unit, double duration, double minPressure1, double maxPressure1, double minPressure2, double maxPressure2)
+        public bool StartLogging(string Unit, TimeSpan duration, double minPressure1, double maxPressure1, double minPressure2, double maxPressure2)
         {
             if (logFile == string.Empty) return false;
 
@@ -142,14 +143,16 @@ namespace PressureTool
             {
                 logging = true;
                 logFileWriter = new StreamWriter(logFile);
-                logFileWriter.WriteLine("Time\tPressure");
-                logFileWriter.WriteLine("None\t" + Unit);
+                logFileWriter.WriteLine("Time\tPressure1\tPressure2");
+                logFileWriter.WriteLine("None\t" + Unit + "\t" + Unit);
 
                 startTime = DateTime.Now;
-                if (duration != 0)
-                    endTime = startTime.AddMinutes(duration);
-                else
+
+                if (duration == TimeSpan.Zero)
                     endTime = DateTime.MaxValue;
+                else
+                    endTime = startTime.Add(duration);
+                
                 minP1 = minPressure1;
                 maxP1 = maxPressure1;
                 minP2 = minPressure2;
@@ -174,27 +177,29 @@ namespace PressureTool
 
             if (Time.CompareTo(endTime) > 0)
             {
-                stopLogging();
+                TimeSpan duration = endTime - startTime;
+                MainWindow.onStopLogging("Logging stopped: Duration of " + duration.ToString() + " reached");
                 return;
             }
             if (p1 > maxP1 || p1 < minP1)
             {
-                stopLogging();
+                MainWindow.onStopLogging("Logging stopped: Pressure P1=" + p1.ToString("0.0000E+00") + " exceeded limit: " + minP1.ToString("0.0000E+00") + " / " + maxP1.ToString("0.0000E+00"));
                 return;
             }
             if (p2 > maxP2 || p2 < minP2)
             {
-                stopLogging();
+                MainWindow.onStopLogging("Logging stopped: Pressure P2=" + p2.ToString("0.0000E+00") + " exceeded limit: " + minP2.ToString("0.0000E+00") + " / " + maxP2.ToString("0.0000E+00"));
                 return;
             }
 
-            logFileWriter.WriteLine("{0}\t{1:00#E+00}\t{2:00#E+00}", Time, p1, p2);
+            logFileWriter.WriteLine("{0}\t{1:0.0000#E+00}\t{2:0.0000#E+00}", Time, p1, p2);
             logFileWriter.Flush();
         }
 
         public void stopLogging()
         {
             logging = false;
+            logFileWriter.Flush();
             logFileWriter.Close();
             logFileWriter.Dispose();
         }

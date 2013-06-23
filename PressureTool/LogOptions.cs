@@ -18,20 +18,22 @@ namespace PressureTool
             ParentWindow = Window;
         }
 
-        private bool checkInput (Control cntrl, out string value)
+        private bool checkInput (Control cntrl, out string value, Type valType )
         {
-            double trash;
             cntrl.Text = cntrl.Text.Replace('.', ',');
-            if (double.TryParse(cntrl.Text, out trash) || cntrl.Text == string.Empty)
+
+            try
             {
-                cntrl.BackColor = Color.Red;
-                toolTip1.SetToolTip(cntrl, "Keine gültige Eingabe");
+                if (cntrl.Text != "") 
+                    TypeDescriptor.GetConverter(valType).ConvertFromString(cntrl.Text);
                 value = cntrl.Text;
                 return true;
             }
-            else
+            catch
             {
                 value = "";
+                cntrl.BackColor = Color.Red;
+                toolTip1.SetToolTip(cntrl, "Keine gültige Eingabe");
                 return false;
             }
         }
@@ -40,25 +42,28 @@ namespace PressureTool
         {
             string dur, minP1, maxP1, minP2, maxP2;
             dur = minP1 = maxP1 = minP2 = maxP2 = "";
+            
 
             bool valid = true;
-            valid = valid && checkInput(InputDuration, out dur);
-            valid = valid && checkInput(InputMaxP1, out maxP1);
-            valid = valid && checkInput(InputMaxP2, out maxP2);
-            valid = valid && checkInput(InputMinP1, out minP1);
-            valid = valid && checkInput(InputMinP2, out minP2);
+            valid = valid && checkInput(InputDuration, out dur, typeof(TimeSpan));
+            valid = valid && checkInput(InputMaxP1, out maxP1, typeof(double));
+            valid = valid && checkInput(InputMaxP2, out maxP2, typeof(double));
+            valid = valid && checkInput(InputMinP1, out minP1, typeof(double));
+            valid = valid && checkInput(InputMinP2, out minP2, typeof(double));
 
 
             if (valid)
             {
                 ParentWindow.startLogging(
-                    (dur == "") ? 0d : double.Parse(dur), 
-                    (maxP1 == "") ? double.MaxValue : double.Parse(maxP1), 
-                    (maxP2 == "") ? double.MaxValue : double.Parse(maxP2), 
-                    (minP1 == "") ? double.MinValue : double.Parse(minP1), 
-                    (minP2 == "") ? double.MinValue : double.Parse(minP2)
+                    (dur == "" || dur == "0") ? TimeSpan.Zero : TimeSpan.Parse(dur),
+                    (minP1 == "") ? double.MinValue : double.Parse(minP1),
+                    (maxP1 == "") ? double.MaxValue : double.Parse(maxP1),
+                    (minP2 == "") ? double.MinValue : double.Parse(minP2),
+                    (maxP2 == "") ? double.MaxValue : double.Parse(maxP2)
                     );
             }
+            else
+            { return; }
             this.Close();
             this.Dispose();
         }
