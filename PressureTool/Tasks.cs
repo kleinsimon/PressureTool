@@ -178,17 +178,17 @@ namespace PressureTool
             if (Time.CompareTo(endTime) > 0)
             {
                 TimeSpan duration = endTime - startTime;
-                MainWindow.onStopLogging("Logging stopped: Duration of " + duration.ToString() + " reached");
+                MainWindow.onStopLogging("Duration of " + duration.ToString() + " reached");
                 return;
             }
             if (p1 > maxP1 || p1 < minP1)
             {
-                MainWindow.onStopLogging("Logging stopped: Pressure P1=" + p1.ToString("0.0000E+00") + " exceeded limit: " + minP1.ToString("0.0000E+00") + " / " + maxP1.ToString("0.0000E+00"));
+                MainWindow.onStopLogging("Pressure P1=" + p1.ToString("0.0000E+00") + " exceeded limit: " + minP1.ToString("0.0000E+00") + " / " + maxP1.ToString("0.0000E+00"));
                 return;
             }
             if (p2 > maxP2 || p2 < minP2)
             {
-                MainWindow.onStopLogging("Logging stopped: Pressure P2=" + p2.ToString("0.0000E+00") + " exceeded limit: " + minP2.ToString("0.0000E+00") + " / " + maxP2.ToString("0.0000E+00"));
+                MainWindow.onStopLogging("Pressure P2=" + p2.ToString("0.0000E+00") + " exceeded limit: " + minP2.ToString("0.0000E+00") + " / " + maxP2.ToString("0.0000E+00"));
                 return;
             }
 
