@@ -578,6 +578,7 @@ namespace PressureTool
 
         private void TXTmes1SP1_Click(object sender, EventArgs e)
         {
+            if (logging) return;
             RelaisWindow = new relais(this);
             RelaisWindow.Show();
         }

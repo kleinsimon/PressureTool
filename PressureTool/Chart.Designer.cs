@@ -57,7 +57,7 @@
             chartArea1.AxisY.IsLabelAutoFit = false;
             chartArea1.AxisY.IsLogarithmic = true;
             chartArea1.AxisY.IsStartedFromZero = false;
-            chartArea1.AxisY.LabelStyle.Format = "1E+0";
+            chartArea1.AxisY.LabelStyle.Format = "0E+00";
             chartArea1.AxisY.LabelStyle.Interval = 0D;
             chartArea1.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             chartArea1.AxisY.MinorTickMark.Enabled = true;
