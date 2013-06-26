@@ -47,12 +47,14 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(35, 11);
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.Location = new System.Drawing.Point(12, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(285, 13);
+            this.label1.Size = new System.Drawing.Size(322, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Logging duration (DD:)HH:MM (Empty or Zero for unlimited)";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // InputDuration
             // 
@@ -61,15 +63,18 @@
             this.InputDuration.Size = new System.Drawing.Size(55, 20);
             this.InputDuration.TabIndex = 1;
             this.InputDuration.Text = "00:00";
+            this.InputDuration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(49, 64);
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.Location = new System.Drawing.Point(15, 64);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(241, 13);
+            this.label2.Size = new System.Drawing.Size(319, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Break Condition Channel 1 (leave empty for none)";
+            this.label2.Text = "Stop condition channel 1 (leave empty for none)";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // InputMinP1
             // 
@@ -77,6 +82,7 @@
             this.InputMinP1.Name = "InputMinP1";
             this.InputMinP1.Size = new System.Drawing.Size(55, 20);
             this.InputMinP1.TabIndex = 3;
+            this.InputMinP1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label3
             // 
@@ -102,6 +108,7 @@
             this.InputMaxP1.Name = "InputMaxP1";
             this.InputMaxP1.Size = new System.Drawing.Size(55, 20);
             this.InputMaxP1.TabIndex = 5;
+            this.InputMaxP1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label5
             // 
@@ -118,6 +125,7 @@
             this.InputMaxP2.Name = "InputMaxP2";
             this.InputMaxP2.Size = new System.Drawing.Size(55, 20);
             this.InputMaxP2.TabIndex = 10;
+            this.InputMaxP2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label6
             // 
@@ -134,19 +142,21 @@
             this.InputMinP2.Name = "InputMinP2";
             this.InputMinP2.Size = new System.Drawing.Size(55, 20);
             this.InputMinP2.TabIndex = 8;
+            this.InputMinP2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(49, 113);
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.Location = new System.Drawing.Point(18, 113);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(241, 13);
+            this.label7.Size = new System.Drawing.Size(316, 13);
             this.label7.TabIndex = 7;
-            this.label7.Text = "Break Condition Channel 2 (leave empty for none)";
+            this.label7.Text = "Stop condition channel 2 (leave empty for none)";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // button1
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button1.Location = new System.Drawing.Point(132, 155);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
@@ -157,6 +167,7 @@
             // 
             // LogOptions
             // 
+            this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(346, 189);

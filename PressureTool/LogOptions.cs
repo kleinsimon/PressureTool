@@ -12,20 +12,24 @@ namespace PressureTool
     public partial class LogOptions : Form
     {
         private MainForm ParentWindow;
+        private Color Default;
         public LogOptions(MainForm Window)
         {
             InitializeComponent();
             ParentWindow = Window;
+            Default = InputDuration.BackColor;
         }
 
         private bool checkInput (Control cntrl, out string value, Type valType )
         {
-            cntrl.Text = cntrl.Text.Replace('.', ',');
+            //cntrl.Text = cntrl.Text.Replace('.', ',');
 
             try
             {
                 if (cntrl.Text != "") 
                     TypeDescriptor.GetConverter(valType).ConvertFromString(cntrl.Text);
+                cntrl.BackColor = Default;
+                toolTip1.SetToolTip(cntrl, "");
                 value = cntrl.Text;
                 return true;
             }
@@ -33,7 +37,7 @@ namespace PressureTool
             {
                 value = "";
                 cntrl.BackColor = Color.Red;
-                toolTip1.SetToolTip(cntrl, "Keine gültige Eingabe");
+                toolTip1.SetToolTip(cntrl, "No valid input... " + valType.Name + " expected");
                 return false;
             }
         }
@@ -42,18 +46,17 @@ namespace PressureTool
         {
             string dur, minP1, maxP1, minP2, maxP2;
             dur = minP1 = maxP1 = minP2 = maxP2 = "";
-            
 
             bool valid = true;
-            valid = valid && checkInput(InputDuration, out dur, typeof(TimeSpan));
-            valid = valid && checkInput(InputMaxP1, out maxP1, typeof(double));
-            valid = valid && checkInput(InputMaxP2, out maxP2, typeof(double));
-            valid = valid && checkInput(InputMinP1, out minP1, typeof(double));
-            valid = valid && checkInput(InputMinP2, out minP2, typeof(double));
-
+            valid &= checkInput(InputDuration, out dur, typeof(TimeSpan));
+            valid &= checkInput(InputMaxP1, out maxP1, typeof(double));
+            valid &= checkInput(InputMaxP2, out maxP2, typeof(double));
+            valid &= checkInput(InputMinP1, out minP1, typeof(double));
+            valid &= checkInput(InputMinP2, out minP2, typeof(double));
 
             if (valid)
             {
+
                 ParentWindow.startLogging(
                     (dur == "" || dur == "0") ? TimeSpan.Zero : TimeSpan.Parse(dur),
                     (minP1 == "") ? double.MinValue : double.Parse(minP1),
@@ -61,13 +64,15 @@ namespace PressureTool
                     (minP2 == "") ? double.MinValue : double.Parse(minP2),
                     (maxP2 == "") ? double.MaxValue : double.Parse(maxP2)
                     );
+
+                this.Close();
+                this.Dispose();
             }
             else
-            { return; }
-            this.Close();
-            this.Dispose();
+            {
+                return;
+            }
+
         }
-
-
     }
 }

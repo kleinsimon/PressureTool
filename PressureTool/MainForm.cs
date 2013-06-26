@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
-using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace PressureTool
 {
@@ -29,6 +24,7 @@ namespace PressureTool
         public int debugLevel = 1;
 
         private DataLogger Log;
+        private bool connected = false;
         private bool _logging = false;
         private bool logging
         {
@@ -55,7 +51,6 @@ namespace PressureTool
                 }
             }
         }
-
         private bool AnswerRecieved = false;
 
         private Questions lastQuestion = Questions.NULL;
@@ -80,7 +75,6 @@ namespace PressureTool
             NumberFormat.NumberDecimalSeparator = ".";
             NumberFormat.NumberGroupSeparator = "";
 
-            //ChartWindow.Show();
             BoxComPorts.DataSource = SerialPort.GetPortNames();
             BoxBaud.DataSource = new int[] { 9600, 19200, 38400 };
 
@@ -126,7 +120,7 @@ namespace PressureTool
             }
             else if (QuestionSent && QuestionACK && ENQSent)
             {
-                 AwaitingAnswer = false;
+                AwaitingAnswer = false;
                 if (lastQuestion != Questions.NULL)
                 {
                     if (Regex.IsMatch(Answer, serialInterface.Answers[lastQuestion].RegexAnswer))
@@ -160,85 +154,98 @@ namespace PressureTool
             switch (Question)
             {
                 case Questions.PRX:
-                    txtMes1On.ForeColor = (res[0] == "0") ? Color.Yellow : Color.Gray;
-                    //txtMes2On.Visible = (res[0] == "0") ? true : false;
-                    string[] P = res[1].Split('E');
-                    TXTcurPressure.Text = P[0];
-                    TXTcurPressureExp.Text = P[1];
-                        break;
+                        connected = true;
+                        txtMes1On.ForeColor = (res[0] == "0") ? Color.Yellow : Color.Gray;
+                        //txtMes2On.Visible = (res[0] == "0") ? true : false;
+                        string[] P = res[1].Split('E');
+                        TXTcurPressure.Text = P[0];
+                        TXTcurPressureExp.Text = P[1];
+                    break;
                 
                 case Questions.SPS:
+                        connected = true;
                         TXTmes1SP1.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
                         TXTmes1SP2.ForeColor = (res[1] == "1") ? Color.Yellow : Color.Gray;
-                        break;
+                    break;
 
                 case Questions.DGS:
+                        connected = true;
                         TXTmes1Degas.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
-                        break;
+                    break;
 
                 case Questions.UNI:
-                    TXTUnit.Text = (res[0] == "0") ? "mbar" : (res[0] == "1") ? "Torr" : "Pa";
-                        break;
+                        connected = true;
+                        TXTUnit.Text = (res[0] == "0") ? "mbar" : (res[0] == "1") ? "Torr" : "Pa";
+                    break;
 
                 case Questions.OFC:
+                        connected = true;
                         TXTmes1Offset.ForeColor = (res[0] == "0") ? Color.Gray : Color.Yellow;
-                        break;
+                    break;
 
                 case Questions.CAL:
+                        connected = true;
                         TXTmes1Calib.ForeColor = (res[0] != "1.000") ? Color.Yellow : Color.Gray;
-                        break;
+                    break;
 
                 case Questions.COM:
-                            txtMes1On.Visible = (res[0] == "0") ? true : false;
-                            string[] Pc = res[1].Split('E');
-                            TXTcurPressure.Text = Pc[0];
-                            TXTcurPressureExp.Text = Pc[1];
-                            //Log.addLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
-                            Log.addValues(DateTime.Now, double.Parse(res[1].Replace('.', ',')), double.Parse(res[3].Replace('.', ',')));
-                            if (ChartWindow != null)
+                        connected = true;
+                        txtMes1On.Visible = (res[0] == "0") ? true : false;
+                        string[] Pc = res[1].Split('E');
+                        TXTcurPressure.Text = Pc[0];
+                        TXTcurPressureExp.Text = Pc[1];
+                        //Log.addLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
+                        //Log.addValues(DateTime.Now, double.Parse(res[1].Replace('.', ',')), double.Parse(res[3].Replace('.', ',')));
+                        Log.addValues(DateTime.Now, double.Parse(res[1],NumberFormat), double.Parse(res[3],NumberFormat));
+                        if (ChartWindow != null)
+                        {
+                            try
                             {
-                                try
+                                BeginInvoke(new Action(() =>
                                 {
-                                    BeginInvoke(new Action(() =>
-                                    {
-                                        ChartWindow.AddToChart(DateTime.Now, double.Parse(res[1].Replace('.', ',')));
-                                    }));
-                                }
-                                catch { }
+                                    ChartWindow.AddToChart(DateTime.Now, double.Parse(res[1], NumberFormat));
+                                }));
                             }
-                        break;
+                            catch { }
+                        }
+                    break;
 
                 case Questions.ERR:
-                    TXTError.Visible = (res[0] == "0000") ? false : true;
-                    toolTip1.SetToolTip(TXTError,(res[0]=="1000") ? "ERROR" : (res[0]=="0100") ? "Hardware nicht installiert" : (res[0]=="0010") ? "Unerlaubter Parameter" : (res[0]=="0001") ? "Falsche Syntax" : "");
-                        break;
+                        connected = true;
+                        TXTError.Visible = (res[0] == "0000") ? false : true;
+                        toolTip1.SetToolTip(TXTError,(res[0]=="1000") ? "ERROR" : (res[0]=="0100") ? "Hardware nicht installiert" : (res[0]=="0010") ? "Unerlaubter Parameter" : (res[0]=="0001") ? "Falsche Syntax" : "");
+                    break;
 
                 case Questions.SP1:
+                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
                         RelaisWindow.displayStatus(res[0], res[1], res[2], 1);
-                        break;
+                    break;
 
                 case Questions.SP2:
+                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
                         RelaisWindow.displayStatus(res[0], res[1], res[2], 2);
-                        break;
+                    break;
 
                 case Questions.SP3:
+                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
                         RelaisWindow.displayStatus(res[0], res[1], res[2], 3);
                         break;
 
                 case Questions.SP4:
+                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
                         RelaisWindow.displayStatus(res[0], res[1], res[2], 4);
-                        break;
+                    break;
 
                 default:
-                        debugMSG("Answer not implemented: " + Question.ToString(), 1);
+                    debugMSG("Answer not implemented: " + Question.ToString(), 1);
                         break;
             }
         }
@@ -458,7 +465,7 @@ namespace PressureTool
 
         private void ButLogStart_Clicked(object sender, EventArgs e)
         {
-            if (!Port.IsOpen) return;
+            //if (!Port.IsOpen) return;
             if (!logging)
             {
                 LogOptionWindow = new LogOptions(this);
@@ -470,8 +477,18 @@ namespace PressureTool
             }
         }
 
+        private void onErrorPortNotOpen()
+        {
+            debugMSG("Not connected.... aborting", 1);
+        }
+
         public void startLogging(TimeSpan duration, double minP1, double maxP1, double minP2, double maxP2)
         {
+            if (!connected)
+            {
+                onErrorPortNotOpen();
+                return;
+            }
             if (Log.StartLogging(TXTUnit.Text, duration, minP1, maxP1, minP2, maxP2))
             {
                 debugMSG("Logfile created, logging...", 1);
@@ -582,7 +599,6 @@ namespace PressureTool
             RelaisWindow = new relais(this);
             RelaisWindow.Show();
         }
-
     }
 
     public static class SuspendUpdate
