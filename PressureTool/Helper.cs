@@ -7,12 +7,6 @@ using System.IO;
 
 namespace PressureTool
 {
-    public enum InputFormat
-    {
-        DoubleOrEmpty,
-        OnlyDouble,
-    }
-
     public enum Questions
     {
         ADC,
