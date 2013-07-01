@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace PressureTool
 {
+    /// <summary>
+    /// Provides the possible Questions + NULL
+    /// </summary>
     public enum Questions
     {
         ADC,
@@ -53,6 +56,9 @@ namespace PressureTool
         NULL
     }
 
+    /// <summary>
+    /// Provides a Container for Options regarding a Question
+    /// </summary>
     class QuestionOptions
     {
         public int numParameter = 0;
@@ -65,6 +71,9 @@ namespace PressureTool
         }
     }
 
+    /// <summary>
+    /// Provides possible Answers as Regex for the possible Questions
+    /// </summary>
     static class serialInterface
     { 
         static public Dictionary<Questions, QuestionOptions> Answers = new Dictionary<Questions, QuestionOptions>()
@@ -112,6 +121,9 @@ namespace PressureTool
         };
     }
 
+    /// <summary>
+    /// Provides a real-time logger for measured Data
+    /// </summary>
     class DataLogger
     {
         public bool logging = false;
@@ -125,11 +137,26 @@ namespace PressureTool
         private double maxP2;
         private MainForm MainWindow;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataLogger"/> class.
+        /// </summary>
+        /// <param name="Window">The window.</param>
         public DataLogger(MainForm Window)
         {
             MainWindow = Window;
         }
 
+
+        /// <summary>
+        /// Starts the logging with stop conditions.
+        /// </summary>
+        /// <param name="Unit">The active unit</param>
+        /// <param name="duration">Stop after this duration... set to zero if forever</param>
+        /// <param name="minPressure1">The min pressure on channel 1</param>
+        /// <param name="maxPressure1">The max pressure1.</param>
+        /// <param name="minPressure2">The min pressure2.</param>
+        /// <param name="maxPressure2">The max pressure2.</param>
+        /// <returns></returns>
         public bool StartLogging(string Unit, TimeSpan duration, double minPressure1, double maxPressure1, double minPressure2, double maxPressure2)
         {
             if (logFile == string.Empty) return false;
@@ -159,6 +186,10 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Adds one custom line to the log.
+        /// </summary>
+        /// <param name="Line">The line.</param>
         public void addLine(string Line)
         {
             if (!logging || logFileWriter == null) return;
@@ -166,6 +197,12 @@ namespace PressureTool
             logFileWriter.Flush();
         }
 
+        /// <summary>
+        /// Add a Value Pair for the given Time
+        /// </summary>
+        /// <param name="Time">Corrosponding Time</param>
+        /// <param name="p1">Pressure on Channel 1</param>
+        /// <param name="p2">Pressure on Channel 2</param>
         public void addValues(DateTime Time, double p1, double p2)
         {
             if (!logging || logFileWriter == null) return;
@@ -191,6 +228,9 @@ namespace PressureTool
             logFileWriter.Flush();
         }
 
+        /// <summary>
+        /// Stops the logging.
+        /// </summary>
         public void stopLogging()
         {
             logging = false;
@@ -200,6 +240,9 @@ namespace PressureTool
         }
     }
 
+    /// <summary>
+    /// Provides a Method for Suspending the Update of an Form
+    /// </summary>
     public static class SuspendUpdate
     {
         private const int WM_SETREDRAW = 0x000B;

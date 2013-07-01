@@ -98,7 +98,7 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tasks.cs" />
+    <Compile Include="Helper.cs" />
     <EmbeddedResource Include="LogOptions.resx">
       <DependentUpon>LogOptions.cs</DependentUpon>
     </EmbeddedResource>

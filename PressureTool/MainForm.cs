@@ -11,14 +11,17 @@ namespace PressureTool
 {
     public partial class MainForm : Form
     {
+        //Protocol Specialchars
         public const string ACK = "\u0006";
         public const string ENQ = "\u0005";
         public const string NAK = "\u0015";
         public const string CR = "\u000d";
         public const string LF = "\u000a";
 
+        //Settings Variables
         public string LogSpeed = "1";
         public string DisplaySpeed = "1";
+        public int debugLevel = 1;
         public string refreshSpeed
         {
             get
@@ -36,9 +39,8 @@ namespace PressureTool
         }
         public bool connectOnStart = false;
 
+        //State Variables
         private int oldHeight;
-        public int debugLevel = 1;
-
         private DataLogger Log;
         private bool _logging = false;
         private bool logging
@@ -67,21 +69,23 @@ namespace PressureTool
             }
         }
         private bool AnswerRecieved = false;
-
         private Questions lastQuestion = Questions.NULL;
         private Queue<KeyValuePair<Questions, string[]>> OutputBuffer = new Queue<KeyValuePair<Questions, string[]>>();
+        private SerialPort Port = new SerialPort();
         public NumberFormatInfo NumberFormat = null;
-
-        public bool _continue = true;
         private bool QuestionSent = false;
         private bool QuestionACK = false;
         private bool ENQSent = false;
         private bool AwaitingAnswer = false;
+
+        //Other Forms
         private PressureChart ChartWindow;
         private relais RelaisWindow;
         private LogOptions LogOptionWindow;
-        private SerialPort Port = new SerialPort();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainForm"/> class.
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
@@ -108,6 +112,10 @@ namespace PressureTool
                 ConnectionWatchDog.Start();
         }
 
+        /// <summary>
+        /// Gets the answer.
+        /// </summary>
+        /// <param name="Answer">The answer.</param>
         private void getAnswer(string Answer)
         {
             Answer = Answer.Replace(CR, string.Empty);
@@ -162,6 +170,11 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Parses the answer.
+        /// </summary>
+        /// <param name="Answer">The answer.</param>
+        /// <param name="Question">The question.</param>
         private void parseAnswer(string Answer, Questions Question)
         {
             string[] res = Answer.Split(',');
@@ -260,6 +273,11 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Sends the question.
+        /// </summary>
+        /// <param name="Question">The question.</param>
+        /// <param name="Parameter">The parameters as a String-Array</param>
         public void sendQuestion(Questions Question, string[] Parameter = null)
         {
             debugMSG("Sendig Question: " + Question.ToString() + "," + ((Parameter != null) ? string.Join(",", Parameter) : ""), 3);
@@ -269,6 +287,11 @@ namespace PressureTool
             if (!Asker.IsBusy) Asker.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Handles the FormClosing event of the MainForm control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="FormClosingEventArgs"/> instance containing the event data.</param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.ComPort = BoxComPorts.Text;
@@ -282,6 +305,11 @@ namespace PressureTool
             disconnect();
         }
 
+        /// <summary>
+        /// Handles the DataReceived event of the Serial-Port.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SerialDataReceivedEventArgs"/> instance containing the event data.</param>
         void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             debugMSG(e.EventType.ToString(), 3);
@@ -295,6 +323,9 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Starts the chart.
+        /// </summary>
         private void startChart()
         {
             if (ChartWindow == null)
@@ -304,6 +335,9 @@ namespace PressureTool
             
         }
 
+        /// <summary>
+        /// Connects this instance to the Serial Port Set in Port and starts the Connection Watchdog and the AskerTimer and getStatus Timer.
+        /// </summary>
         private void connect()
         {
             if (Port.IsOpen) return;
@@ -338,6 +372,9 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Disconnects the Serial Port and stops the Connection Watchdog.
+        /// </summary>
         private void disconnect()
         {
             try
@@ -356,12 +393,20 @@ namespace PressureTool
             catch { debugMSG("Port could not be closed", 1); }
         }
 
+        /// <summary>
+        /// Callback for Timeout
+        /// </summary>
         private void onTimeout()
         {
             debugMSG("Timeout recieving Answer", 1);
             disconnect();
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the ButConnect control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ButConnect_CheckedChanged(object sender, EventArgs e)
         {
             if (!ConnectionWatchDog.Enabled)
@@ -375,16 +420,29 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Run when the chart is closed.
+        /// </summary>
         public void onChartClosed()
         {
             BUTChart.Checked = false;
         }
 
+        /// <summary>
+        /// Handles the ErrorReceived event of the Serial Port.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SerialErrorReceivedEventArgs"/> instance containing the event data.</param>
         void Port_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
             debugMSG(e.EventType.ToString(), 1);
         }
 
+        /// <summary>
+        /// Updates the Device Status by sending questions
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="DoWorkEventArgs"/> instance containing the event data.</param>
         private void getStatus_DoWork(object sender, DoWorkEventArgs e)
         {
             debugMSG("Getting Status", 3);
@@ -400,6 +458,11 @@ namespace PressureTool
             sendQuestion(Questions.COM, new string[] { DisplaySpeed });
         }
 
+        /// <summary>
+        /// Handles the next Question in the Queue
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="DoWorkEventArgs"/> instance containing the event data.</param>
         private void Asker_DoWork(object sender, DoWorkEventArgs e)
         {           
             if (OutputBuffer.Count > 0 && !AwaitingAnswer && Port.IsOpen)
@@ -434,6 +497,11 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Adds a debug Message to the output control
+        /// </summary>
+        /// <param name="Message">The message.</param>
+        /// <param name="Level">Priority of the Message (1=high)</param>
         private void debugMSG(string Message, int Level)
         {
             if (Level <= debugLevel)
@@ -448,6 +516,11 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Handles the Tick event of the getStatusTimer control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void getStatusTimer_Tick(object sender, EventArgs e)
         {
             if (logging) return;
@@ -455,18 +528,32 @@ namespace PressureTool
             if (!getStatus.IsBusy) getStatus.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Handles the Tick event of the AskerTimer control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void AskerTimer_Tick(object sender, EventArgs e)
         {
-            //if (logging) return;
             if (!Asker.IsBusy) Asker.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Asks for the logging file location
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ButLog_Click(object sender, EventArgs e)
         {
             if (logging) return;
             saveFileDialog1.ShowDialog();
         }
 
+        /// <summary>
+        /// Sets the File for Logging
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             debugMSG("Log File set to " + saveFileDialog1.FileName, 1);
@@ -475,6 +562,11 @@ namespace PressureTool
             ButLogStart.Enabled = true;
         }
 
+        /// <summary>
+        /// Opens the Options Window for logging
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ButLogStart_Clicked(object sender, EventArgs e)
         {
             //if (!Port.IsOpen) return;
@@ -489,11 +581,22 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Error if Port not Open
+        /// </summary>
         private void onErrorPortNotOpen()
         {
             debugMSG("Not connected.... aborting", 1);
         }
 
+        /// <summary>
+        /// Starts logging with Options
+        /// </summary>
+        /// <param name="duration">Duration of logging</param>
+        /// <param name="minP1">Lower Pressure Limit on Channel 1</param>
+        /// <param name="maxP1">Upper Pressure Limit on Channel 1</param>
+        /// <param name="minP2">Lower Pressure Limit on Channel 2</param>
+        /// <param name="maxP2">Upper Pressure Limit on Channel 2</param>
         public void startLogging(TimeSpan duration, double minP1, double maxP1, double minP2, double maxP2)
         {
             if (!Port.IsOpen)
@@ -519,12 +622,19 @@ namespace PressureTool
             sendQuestion(Questions.COM, new string[] { LogSpeed });
         }
 
+        /// <summary>
+        /// Stops the logging.
+        /// </summary>
         private void stopLogging()
         {
             Log.stopLogging();
             logging = false;
         }
 
+        /// <summary>
+        /// Callback when logging stopped
+        /// </summary>
+        /// <param name="Reason">The reason.</param>
         public void onStopLogging(string Reason = "")
         {
             stopLogging();
@@ -536,11 +646,19 @@ namespace PressureTool
             catch { }
         }
 
+        /// <summary>
+        /// Handles the Click event of the PanelHideButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void PanelHideButton_Click(object sender, EventArgs e)
         {
             togglePanel();
         }
 
+        /// <summary>
+        /// Hides / Shows the lower Part of the Window
+        /// </summary>
         private void togglePanel()
         {
             this.SuspendLayout();
@@ -565,6 +683,11 @@ namespace PressureTool
             this.ResumeLayout();
         }
 
+        /// <summary>
+        /// Handles the Load event of the MainForm control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void MainForm_Load(object sender, EventArgs e)
         {
             if (splitContainer1.Panel2Collapsed)
@@ -577,12 +700,22 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the ConfigButton control. Shows the Config Form
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ConfigButton_Click(object sender, EventArgs e)
         {
             Settings bla = new Settings(this);
             bla.Show();
         }
 
+        /// <summary>
+        /// This Method is Called by the Connection Watchdog. It reconnects if the connection is lost
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ConnectionWatchDog_Tick(object sender, EventArgs e)
         {
             if (!Port.IsOpen)
@@ -591,6 +724,11 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Shows / Hides the Chart Form
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void BUTChart_CheckedChanged(object sender, EventArgs e)
         {
             if (BUTChart.Checked)
@@ -605,6 +743,11 @@ namespace PressureTool
             }
         }
 
+        /// <summary>
+        /// Shows the Relais Form
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void TXTmes1SP1_Click(object sender, EventArgs e)
         {
             if (logging) return;

@@ -9,10 +9,18 @@ using System.Windows.Forms;
 
 namespace PressureTool
 {
+    /// <summary>
+    /// Provides a Form to set Logging Options
+    /// </summary>
     public partial class LogOptions : Form
     {
         private MainForm ParentWindow;
         private Color Default;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogOptions"/> class.
+        /// </summary>
+        /// <param name="Window">The Parent Window</param>
         public LogOptions(MainForm Window)
         {
             InitializeComponent();
@@ -20,10 +28,15 @@ namespace PressureTool
             Default = InputDuration.BackColor;
         }
 
+        /// <summary>
+        /// Checks the Content of a Control for validity. Returns the true if the Text-Property may be parsed in the given Type, also passes out the Text-Property.
+        /// </summary>
+        /// <param name="cntrl">The Control to be checked</param>
+        /// <param name="value">Gives bacl the Value of the Text-Property</param>
+        /// <param name="valType">Type to be parsed to</param>
+        /// <returns></returns>
         private bool checkInput (Control cntrl, out string value, Type valType )
         {
-            //cntrl.Text = cntrl.Text.Replace('.', ',');
-
             try
             {
                 if (cntrl.Text != "") 
@@ -42,7 +55,12 @@ namespace PressureTool
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the Click event of the startLoggingButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void startLoggingButton_Click(object sender, EventArgs e)
         {
             string dur, minP1, maxP1, minP2, maxP2;
             dur = minP1 = maxP1 = minP2 = maxP2 = "";

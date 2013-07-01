@@ -41,7 +41,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.InputMinP2 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.StartLoggingButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
@@ -155,23 +155,23 @@
             this.label7.Text = "Stop condition channel 2 (leave empty for none)";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // button1
+            // StartLoggingButton
             // 
-            this.button1.Location = new System.Drawing.Point(132, 155);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "Start";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.StartLoggingButton.Location = new System.Drawing.Point(132, 155);
+            this.StartLoggingButton.Name = "StartLoggingButton";
+            this.StartLoggingButton.Size = new System.Drawing.Size(75, 23);
+            this.StartLoggingButton.TabIndex = 12;
+            this.StartLoggingButton.Text = "Start";
+            this.StartLoggingButton.UseVisualStyleBackColor = true;
+            this.StartLoggingButton.Click += new System.EventHandler(this.startLoggingButton_Click);
             // 
             // LogOptions
             // 
-            this.AcceptButton = this.button1;
+            this.AcceptButton = this.StartLoggingButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(346, 189);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.StartLoggingButton);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.InputMaxP2);
             this.Controls.Add(this.label6);
@@ -205,7 +205,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox InputMinP2;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button StartLoggingButton;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

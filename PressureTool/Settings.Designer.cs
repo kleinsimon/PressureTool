@@ -32,7 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.InputLogSpeed = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.SaveSettingsButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.InputConnectOnStart = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -77,16 +77,15 @@
             this.InputLogSpeed.Size = new System.Drawing.Size(91, 21);
             this.InputLogSpeed.TabIndex = 2;
             // 
-            // button1
+            // SaveSettingsButton
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(86, 150);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.SaveSettingsButton.Location = new System.Drawing.Point(86, 150);
+            this.SaveSettingsButton.Name = "SaveSettingsButton";
+            this.SaveSettingsButton.Size = new System.Drawing.Size(75, 23);
+            this.SaveSettingsButton.TabIndex = 4;
+            this.SaveSettingsButton.Text = "OK";
+            this.SaveSettingsButton.UseVisualStyleBackColor = true;
+            this.SaveSettingsButton.Click += new System.EventHandler(this.saveSettingsButton_Click);
             // 
             // label3
             // 
@@ -146,7 +145,7 @@
             // 
             // Settings
             // 
-            this.AcceptButton = this.button1;
+            this.AcceptButton = this.SaveSettingsButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(240, 185);
@@ -156,7 +155,7 @@
             this.Controls.Add(this.InputLogLevel);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.InputConnectOnStart);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.SaveSettingsButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.InputLogSpeed);
             this.Controls.Add(this.label1);
@@ -174,7 +173,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox InputLogSpeed;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button SaveSettingsButton;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox InputConnectOnStart;
         private System.Windows.Forms.Label label4;
