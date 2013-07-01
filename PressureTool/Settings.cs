@@ -58,6 +58,8 @@ namespace PressureTool
             InputLogLevel.ValueMember = "Key";
             InputLogLevel.DataSource = new BindingSource(Verbosity, null);
             InputLogLevel.DataBindings.Add("SelectedValue", ParentWindow.debugLevel, null, true, DataSourceUpdateMode.Never);
+
+            InputRefresh.DataBindings.Add("Text", ParentWindow.refreshSpeed, null, true, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -66,6 +68,7 @@ namespace PressureTool
             ParentWindow.LogSpeed = (string)InputLogSpeed.SelectedValue;
             ParentWindow.connectOnStart = (bool)InputConnectOnStart.SelectedValue;
             ParentWindow.debugLevel = (int)InputLogLevel.SelectedValue;
+            ParentWindow.refreshSpeed = InputRefresh.Text;
             this.Close();
         }
     }

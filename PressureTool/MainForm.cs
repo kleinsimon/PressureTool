@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Globalization;
 using System.IO.Ports;
 using System.Text.RegularExpressions;
 
@@ -18,13 +19,27 @@ namespace PressureTool
 
         public string LogSpeed = "1";
         public string DisplaySpeed = "1";
+        public string refreshSpeed
+        {
+            get
+            {
+                return (getStatusTimer.Interval / 1000).ToString();
+            }
+            set
+            {
+                double tmp;
+                if (double.TryParse(value, out tmp))
+                {
+                    getStatusTimer.Interval = (int) (tmp * 1000);
+                }
+            }
+        }
         public bool connectOnStart = false;
 
         private int oldHeight;
         public int debugLevel = 1;
 
         private DataLogger Log;
-        private bool connected = false;
         private bool _logging = false;
         private bool logging
         {
@@ -55,7 +70,7 @@ namespace PressureTool
 
         private Questions lastQuestion = Questions.NULL;
         private Queue<KeyValuePair<Questions, string[]>> OutputBuffer = new Queue<KeyValuePair<Questions, string[]>>();
-        public System.Globalization.NumberFormatInfo NumberFormat = null;
+        public NumberFormatInfo NumberFormat = null;
 
         public bool _continue = true;
         private bool QuestionSent = false;
@@ -71,7 +86,7 @@ namespace PressureTool
         {
             InitializeComponent();
             Log = new DataLogger(this);
-            NumberFormat = (System.Globalization.NumberFormatInfo) System.Globalization.CultureInfo.InstalledUICulture.NumberFormat.Clone();
+            NumberFormat = (NumberFormatInfo) CultureInfo.InstalledUICulture.NumberFormat.Clone();
             NumberFormat.NumberDecimalSeparator = ".";
             NumberFormat.NumberGroupSeparator = "";
 
@@ -85,6 +100,7 @@ namespace PressureTool
                 DisplaySpeed = Properties.Settings.Default.DisplaySpeed;
                 LogSpeed = Properties.Settings.Default.LogSpeed;
                 connectOnStart = Properties.Settings.Default.ConnectOnStart;
+                refreshSpeed = Properties.Settings.Default.RefreshSpeed;
             }
             catch { }
 
@@ -154,7 +170,6 @@ namespace PressureTool
             switch (Question)
             {
                 case Questions.PRX:
-                        connected = true;
                         txtMes1On.ForeColor = (res[0] == "0") ? Color.Yellow : Color.Gray;
                         //txtMes2On.Visible = (res[0] == "0") ? true : false;
                         string[] P = res[1].Split('E');
@@ -163,33 +178,27 @@ namespace PressureTool
                     break;
                 
                 case Questions.SPS:
-                        connected = true;
                         TXTmes1SP1.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
                         TXTmes1SP2.ForeColor = (res[1] == "1") ? Color.Yellow : Color.Gray;
                     break;
 
                 case Questions.DGS:
-                        connected = true;
                         TXTmes1Degas.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
                     break;
 
                 case Questions.UNI:
-                        connected = true;
                         TXTUnit.Text = (res[0] == "0") ? "mbar" : (res[0] == "1") ? "Torr" : "Pa";
                     break;
 
                 case Questions.OFC:
-                        connected = true;
                         TXTmes1Offset.ForeColor = (res[0] == "0") ? Color.Gray : Color.Yellow;
                     break;
 
                 case Questions.CAL:
-                        connected = true;
                         TXTmes1Calib.ForeColor = (res[0] != "1.000") ? Color.Yellow : Color.Gray;
                     break;
 
                 case Questions.COM:
-                        connected = true;
                         txtMes1On.Visible = (res[0] == "0") ? true : false;
                         string[] Pc = res[1].Split('E');
                         TXTcurPressure.Text = Pc[0];
@@ -211,37 +220,38 @@ namespace PressureTool
                     break;
 
                 case Questions.ERR:
-                        connected = true;
                         TXTError.Visible = (res[0] == "0000") ? false : true;
                         toolTip1.SetToolTip(TXTError,(res[0]=="1000") ? "ERROR" : (res[0]=="0100") ? "Hardware nicht installiert" : (res[0]=="0010") ? "Unerlaubter Parameter" : (res[0]=="0001") ? "Falsche Syntax" : "");
                     break;
 
                 case Questions.SP1:
-                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 1);
+                        RelaisWindow.displayStatus(res[0], res[1], res[2], 1, NumberFormat);
                     break;
 
                 case Questions.SP2:
-                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 2);
+                        RelaisWindow.displayStatus(res[0], res[1], res[2], 2, NumberFormat);
                     break;
 
                 case Questions.SP3:
-                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 3);
-                        break;
+                        RelaisWindow.displayStatus(res[0], res[1], res[2], 3, NumberFormat);
+                    break;
 
                 case Questions.SP4:
-                        connected = true;
                         if (RelaisWindow == null) return;
                         if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 4);
+                        RelaisWindow.displayStatus(res[0], res[1], res[2], 4, NumberFormat);
+                    break;
+
+                case Questions.IOT:
+                    if (RelaisWindow == null) return;
+                    if (!RelaisWindow.Visible) return;
+                    RelaisWindow.displayIOT(res[0], res[1]);
                     break;
 
                 default:
@@ -252,6 +262,7 @@ namespace PressureTool
 
         public void sendQuestion(Questions Question, string[] Parameter = null)
         {
+            debugMSG("Sendig Question: " + Question.ToString() + "," + ((Parameter != null) ? string.Join(",", Parameter) : ""), 3);
             if (!Port.IsOpen) return;
             OutputBuffer.Enqueue(new KeyValuePair<Questions, string[]>(Question, Parameter));
 
@@ -265,6 +276,7 @@ namespace PressureTool
             Properties.Settings.Default.DisplaySpeed = DisplaySpeed;
             Properties.Settings.Default.LogSpeed = LogSpeed;
             Properties.Settings.Default.ConnectOnStart = connectOnStart;
+            Properties.Settings.Default.RefreshSpeed = refreshSpeed;
             Properties.Settings.Default.Save();
             sendQuestion(Questions.PRX);
             disconnect();
@@ -352,7 +364,7 @@ namespace PressureTool
 
         private void ButConnect_CheckedChanged(object sender, EventArgs e)
         {
-            if (ButConnect.Checked)
+            if (!ConnectionWatchDog.Enabled)
             {
                 ConnectionWatchDog.Start();
             }
@@ -410,7 +422,7 @@ namespace PressureTool
                 try
                 {
                     Port.WriteLine(Question.ToString() + ((Parameter != null) ? "," + String.Join(",", Parameter) : ""));
-                    debugMSG("Send: " + Question.ToString() + ((Parameter != null) ? "," + String.Join(",", Parameter) : ""), 2);
+                    //debugMSG("Send: " + Question.ToString() + ((Parameter != null) ? "," + String.Join(",", Parameter) : ""), 2);
                     QuestionSent = true;
                     lastQuestion = Question;
                     if (Question == Questions.COM) QuestionSent = QuestionACK = ENQSent = true;
@@ -484,7 +496,7 @@ namespace PressureTool
 
         public void startLogging(TimeSpan duration, double minP1, double maxP1, double minP2, double maxP2)
         {
-            if (!connected)
+            if (!Port.IsOpen)
             {
                 onErrorPortNotOpen();
                 return;
