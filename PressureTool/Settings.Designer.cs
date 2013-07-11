@@ -37,6 +37,10 @@
             this.InputLogLevel = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.InputRefresh = new System.Windows.Forms.TextBox();
+            this.BoxComPorts = new System.Windows.Forms.ComboBox();
+            this.BoxBaud = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // InputDisplaySpeed
@@ -59,7 +63,7 @@
             // 
             // SaveSettingsButton
             // 
-            this.SaveSettingsButton.Location = new System.Drawing.Point(86, 123);
+            this.SaveSettingsButton.Location = new System.Drawing.Point(82, 167);
             this.SaveSettingsButton.Name = "SaveSettingsButton";
             this.SaveSettingsButton.Size = new System.Drawing.Size(75, 23);
             this.SaveSettingsButton.TabIndex = 4;
@@ -123,12 +127,52 @@
             this.InputRefresh.Size = new System.Drawing.Size(91, 20);
             this.InputRefresh.TabIndex = 11;
             // 
+            // BoxComPorts
+            // 
+            this.BoxComPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.BoxComPorts.FormattingEnabled = true;
+            this.BoxComPorts.Location = new System.Drawing.Point(137, 113);
+            this.BoxComPorts.Name = "BoxComPorts";
+            this.BoxComPorts.Size = new System.Drawing.Size(91, 21);
+            this.BoxComPorts.TabIndex = 40;
+            // 
+            // BoxBaud
+            // 
+            this.BoxBaud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.BoxBaud.FormattingEnabled = true;
+            this.BoxBaud.Location = new System.Drawing.Point(137, 140);
+            this.BoxBaud.Name = "BoxBaud";
+            this.BoxBaud.Size = new System.Drawing.Size(91, 21);
+            this.BoxBaud.TabIndex = 39;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 116);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(55, 13);
+            this.label2.TabIndex = 41;
+            this.label2.Text = "Serial-Port";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(12, 143);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(58, 13);
+            this.label6.TabIndex = 42;
+            this.label6.Text = "Baud-Rate";
+            // 
             // Settings
             // 
             this.AcceptButton = this.SaveSettingsButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(240, 154);
+            this.ClientSize = new System.Drawing.Size(240, 198);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.BoxComPorts);
+            this.Controls.Add(this.BoxBaud);
             this.Controls.Add(this.InputRefresh);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -156,5 +200,9 @@
         private System.Windows.Forms.ComboBox InputLogLevel;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox InputRefresh;
+        private System.Windows.Forms.ComboBox BoxComPorts;
+        private System.Windows.Forms.ComboBox BoxBaud;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label6;
     }
 }

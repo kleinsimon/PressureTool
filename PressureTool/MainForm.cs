@@ -41,6 +41,7 @@ namespace PressureTool
         //State Variables
         private int oldHeight;
         private DataLogger Log;
+        //logging status
         private bool _logging = false;
         private bool logging
         {
@@ -83,6 +84,7 @@ namespace PressureTool
                 }
             }
         }
+        // connection status, keeps UI up to date
         private bool _connected = false;
         private bool connected
         {
@@ -108,7 +110,9 @@ namespace PressureTool
             }
         }
         private bool AnswerRecieved = false;
+        //stores last question to proper parse the next answer
         private Questions lastQuestion = Questions.NULL;
+        //keeps outgoing messages
         private Queue<KeyValuePair<Questions, string[]>> OutputBuffer = new Queue<KeyValuePair<Questions, string[]>>();
         private SerialPort Port = new SerialPort();
         public NumberFormatInfo NumberFormat = null;
@@ -133,13 +137,10 @@ namespace PressureTool
             NumberFormat.NumberDecimalSeparator = ".";
             NumberFormat.NumberGroupSeparator = "";
 
-            BoxComPorts.DataSource = SerialPort.GetPortNames();
-            BoxBaud.DataSource = new int[] { 9600, 19200, 38400 };
+
 
             try
             {
-                BoxBaud.Text = Properties.Settings.Default.BaudRate;
-                BoxComPorts.Text= Properties.Settings.Default.ComPort;
                 DisplaySpeed = Properties.Settings.Default.DisplaySpeed;
                 connectOnStart = Properties.Settings.Default.ConnectOnStart;
                 refreshSpeed = Properties.Settings.Default.RefreshSpeed;
@@ -332,8 +333,6 @@ namespace PressureTool
         /// <param name="e">The <see cref="FormClosingEventArgs"/> instance containing the event data.</param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Properties.Settings.Default.ComPort = BoxComPorts.Text;
-            Properties.Settings.Default.BaudRate = BoxBaud.Text;
             Properties.Settings.Default.DisplaySpeed = DisplaySpeed;
             Properties.Settings.Default.ConnectOnStart = connectOnStart;
             Properties.Settings.Default.RefreshSpeed = refreshSpeed;
@@ -381,8 +380,8 @@ namespace PressureTool
             try
             {
                 //Port = new SerialPort();
-                Port.PortName = BoxComPorts.Text;
-                Port.BaudRate = int.Parse(BoxBaud.Text);
+                Port.PortName = Properties.Settings.Default.ComPort;
+                Port.BaudRate = int.Parse(Properties.Settings.Default.BaudRate);
                 Port.Parity = Parity.None;
                 Port.StopBits = StopBits.One;
                 Port.DataBits = 8;

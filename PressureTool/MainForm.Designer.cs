@@ -48,8 +48,6 @@
             this.ButLogStart = new System.Windows.Forms.CheckBox();
             this.ButLog = new System.Windows.Forms.Button();
             this.ButConnect = new System.Windows.Forms.CheckBox();
-            this.BoxComPorts = new System.Windows.Forms.ComboBox();
-            this.BoxBaud = new System.Windows.Forms.ComboBox();
             this.getStatusTimer = new System.Windows.Forms.Timer(this.components);
             this.Asker = new System.ComponentModel.BackgroundWorker();
             this.AskerTimer = new System.Windows.Forms.Timer(this.components);
@@ -96,8 +94,6 @@
             this.splitContainer1.Panel2.Controls.Add(this.ButLogStart);
             this.splitContainer1.Panel2.Controls.Add(this.ButLog);
             this.splitContainer1.Panel2.Controls.Add(this.ButConnect);
-            this.splitContainer1.Panel2.Controls.Add(this.BoxComPorts);
-            this.splitContainer1.Panel2.Controls.Add(this.BoxBaud);
             this.splitContainer1.Size = new System.Drawing.Size(350, 358);
             this.splitContainer1.SplitterDistance = 177;
             this.splitContainer1.TabIndex = 0;
@@ -255,12 +251,12 @@
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(12, 35);
+            this.textBox1.Location = new System.Drawing.Point(12, 6);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(248, 131);
+            this.textBox1.Size = new System.Drawing.Size(248, 160);
             this.textBox1.TabIndex = 41;
             // 
             // ButLogStart
@@ -302,24 +298,6 @@
             this.ButConnect.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ButConnect.UseVisualStyleBackColor = true;
             this.ButConnect.Click += new System.EventHandler(this.ButConnect_Clicked);
-            // 
-            // BoxComPorts
-            // 
-            this.BoxComPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.BoxComPorts.FormattingEnabled = true;
-            this.BoxComPorts.Location = new System.Drawing.Point(12, 8);
-            this.BoxComPorts.Name = "BoxComPorts";
-            this.BoxComPorts.Size = new System.Drawing.Size(121, 21);
-            this.BoxComPorts.TabIndex = 38;
-            // 
-            // BoxBaud
-            // 
-            this.BoxBaud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.BoxBaud.FormattingEnabled = true;
-            this.BoxBaud.Location = new System.Drawing.Point(139, 8);
-            this.BoxBaud.Name = "BoxBaud";
-            this.BoxBaud.Size = new System.Drawing.Size(121, 21);
-            this.BoxBaud.TabIndex = 37;
             // 
             // getStatusTimer
             // 
@@ -394,8 +372,6 @@
         private System.Windows.Forms.CheckBox ButLogStart;
         private System.Windows.Forms.Button ButLog;
         private System.Windows.Forms.CheckBox ButConnect;
-        private System.Windows.Forms.ComboBox BoxComPorts;
-        private System.Windows.Forms.ComboBox BoxBaud;
         private System.Windows.Forms.Timer getStatusTimer;
         private System.ComponentModel.BackgroundWorker Asker;
         private System.Windows.Forms.Timer AskerTimer;

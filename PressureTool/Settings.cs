@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.IO.Ports;
 using System.Windows.Forms;
 
 namespace PressureTool
@@ -63,6 +64,12 @@ namespace PressureTool
             InputLogLevel.DataBindings.Add("SelectedValue", ParentWindow.debugLevel, null, true, DataSourceUpdateMode.Never);
 
             InputRefresh.DataBindings.Add("Text", ParentWindow.refreshSpeed, null, true, DataSourceUpdateMode.OnPropertyChanged);
+
+            BoxComPorts.DataSource = SerialPort.GetPortNames();
+            BoxBaud.DataSource = new int[] { 9600, 19200, 38400 };
+
+            BoxBaud.Text = Properties.Settings.Default.BaudRate;
+            BoxComPorts.Text = Properties.Settings.Default.ComPort;
         }
 
         /// <summary>
@@ -76,6 +83,9 @@ namespace PressureTool
             ParentWindow.connectOnStart = (bool)InputConnectOnStart.SelectedValue;
             ParentWindow.debugLevel = (int)InputLogLevel.SelectedValue;
             ParentWindow.refreshSpeed = InputRefresh.Text;
+
+            Properties.Settings.Default.ComPort = BoxComPorts.Text;
+            Properties.Settings.Default.BaudRate = BoxBaud.Text;
             this.Close();
         }
     }
