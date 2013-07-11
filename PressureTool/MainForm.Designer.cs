@@ -301,7 +301,7 @@
             this.ButConnect.Text = "Connect";
             this.ButConnect.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ButConnect.UseVisualStyleBackColor = true;
-            this.ButConnect.CheckedChanged += new System.EventHandler(this.ButConnect_CheckedChanged);
+            this.ButConnect.Click += new System.EventHandler(this.ButConnect_Clicked);
             // 
             // BoxComPorts
             // 

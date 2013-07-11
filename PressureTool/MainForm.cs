@@ -83,6 +83,30 @@ namespace PressureTool
                 }
             }
         }
+        private bool _connected = false;
+        private bool connected
+        {
+            get
+            {
+                return _connected;
+            }
+            set
+            {
+                _connected = value;
+                if (value)
+                {
+                    ButConnect.Text = "Connected";
+                    ButConnect.BackColor = Color.Green;
+                    ButConnect.Checked = true;
+                }
+                else
+                {
+                    ButConnect.Text = "Connect";
+                    ButConnect.BackColor = Color.Transparent;
+                    ButConnect.Checked = false;
+                }
+            }
+        }
         private bool AnswerRecieved = false;
         private Questions lastQuestion = Questions.NULL;
         private Queue<KeyValuePair<Questions, string[]>> OutputBuffer = new Queue<KeyValuePair<Questions, string[]>>();
@@ -368,20 +392,18 @@ namespace PressureTool
                 Port.ErrorReceived += new SerialErrorReceivedEventHandler(Port_ErrorReceived);
                 Port.ReadTimeout = 2000;
                 Port.WriteTimeout = 2000;
-                ButConnect.Text = "Connected";
-                ButConnect.BackColor = Color.Green;
                 debugMSG("Connected to " + Port.PortName + " with baud " + Port.BaudRate.ToString(), 1);
                 AskerTimer.Start();
                 getStatusTimer.Start();
                 getStatus.RunWorkerAsync();
                 ConnectionWatchDog.Start();
+                connected = true;
                 //togglePanel();
             }
             catch
             {
-                ButLogStart.Checked = false;
                 debugMSG("Port could not be opened", 1);
-                ButConnect.Checked = false;
+                connected = false;
             }
         }
 
@@ -395,13 +417,11 @@ namespace PressureTool
                 OutputBuffer.Clear();
                 Port.Close();
                 Port.Dispose();
-                ButConnect.Text = "Connect";
-                ButConnect.BackColor = Color.Transparent;
-                ButConnect.Checked = false;
                 debugMSG("Disconnected", 1);
                 getStatusTimer.Stop();
                 AskerTimer.Stop();
                 ConnectionWatchDog.Stop();
+                connected = false;
             }
             catch { debugMSG("Port could not be closed", 1); }
         }
@@ -420,7 +440,7 @@ namespace PressureTool
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void ButConnect_CheckedChanged(object sender, EventArgs e)
+        private void ButConnect_Clicked(object sender, EventArgs e)
         {
             if (!ConnectionWatchDog.Enabled)
             {

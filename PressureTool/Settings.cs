@@ -24,10 +24,10 @@ namespace PressureTool
             {"2", "1 min"},
         };
 
-        Dictionary<string, bool> BoolValues = new Dictionary<string, bool>() 
+        Dictionary<bool, string> BoolValues = new Dictionary<bool, string>() 
         { 
-            {"Off", false},
-            {"On", true},
+            {false, "Off"},
+            {true, "On"},
         };
 
         Dictionary<int, string> Verbosity = new Dictionary<int, string>() 
@@ -52,8 +52,8 @@ namespace PressureTool
             InputDisplaySpeed.DataSource = new BindingSource(SpeedValues, null);
             InputDisplaySpeed.DataBindings.Add("SelectedValue", ParentWindow.DisplaySpeed, null, true, DataSourceUpdateMode.Never);
 
-            InputConnectOnStart.DisplayMember = "Key";
-            InputConnectOnStart.ValueMember = "Value";
+            InputConnectOnStart.DisplayMember = "Value";
+            InputConnectOnStart.ValueMember = "Key";
             InputConnectOnStart.DataSource = new BindingSource(BoolValues, null);
             InputConnectOnStart.DataBindings.Add("SelectedValue", ParentWindow.connectOnStart, null, true, DataSourceUpdateMode.Never);
 

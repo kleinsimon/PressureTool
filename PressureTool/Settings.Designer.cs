@@ -59,7 +59,7 @@
             // 
             // SaveSettingsButton
             // 
-            this.SaveSettingsButton.Location = new System.Drawing.Point(86, 150);
+            this.SaveSettingsButton.Location = new System.Drawing.Point(86, 123);
             this.SaveSettingsButton.Name = "SaveSettingsButton";
             this.SaveSettingsButton.Size = new System.Drawing.Size(75, 23);
             this.SaveSettingsButton.TabIndex = 4;
@@ -70,7 +70,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 63);
+            this.label3.Location = new System.Drawing.Point(12, 36);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(87, 13);
             this.label3.TabIndex = 6;
@@ -80,7 +80,7 @@
             // 
             this.InputConnectOnStart.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.InputConnectOnStart.FormattingEnabled = true;
-            this.InputConnectOnStart.Location = new System.Drawing.Point(137, 60);
+            this.InputConnectOnStart.Location = new System.Drawing.Point(137, 33);
             this.InputConnectOnStart.Name = "InputConnectOnStart";
             this.InputConnectOnStart.Size = new System.Drawing.Size(91, 21);
             this.InputConnectOnStart.TabIndex = 5;
@@ -88,7 +88,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 90);
+            this.label4.Location = new System.Drawing.Point(12, 63);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 13);
             this.label4.TabIndex = 8;
@@ -102,7 +102,7 @@
             "1",
             "2",
             "3"});
-            this.InputLogLevel.Location = new System.Drawing.Point(137, 87);
+            this.InputLogLevel.Location = new System.Drawing.Point(137, 60);
             this.InputLogLevel.Name = "InputLogLevel";
             this.InputLogLevel.Size = new System.Drawing.Size(91, 21);
             this.InputLogLevel.TabIndex = 7;
@@ -110,7 +110,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 117);
+            this.label5.Location = new System.Drawing.Point(12, 90);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(91, 13);
             this.label5.TabIndex = 10;
@@ -118,7 +118,7 @@
             // 
             // InputRefresh
             // 
-            this.InputRefresh.Location = new System.Drawing.Point(137, 114);
+            this.InputRefresh.Location = new System.Drawing.Point(137, 87);
             this.InputRefresh.Name = "InputRefresh";
             this.InputRefresh.Size = new System.Drawing.Size(91, 20);
             this.InputRefresh.TabIndex = 11;
@@ -128,7 +128,7 @@
             this.AcceptButton = this.SaveSettingsButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(240, 185);
+            this.ClientSize = new System.Drawing.Size(240, 154);
             this.Controls.Add(this.InputRefresh);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
