@@ -43,13 +43,15 @@
             this.label7 = new System.Windows.Forms.Label();
             this.StartLoggingButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label8 = new System.Windows.Forms.Label();
+            this.InputLogSpeed = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(12, 11);
+            this.label1.Location = new System.Drawing.Point(12, 59);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(322, 13);
             this.label1.TabIndex = 0;
@@ -58,7 +60,7 @@
             // 
             // InputDuration
             // 
-            this.InputDuration.Location = new System.Drawing.Point(152, 27);
+            this.InputDuration.Location = new System.Drawing.Point(152, 75);
             this.InputDuration.Name = "InputDuration";
             this.InputDuration.Size = new System.Drawing.Size(55, 20);
             this.InputDuration.TabIndex = 1;
@@ -69,7 +71,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Location = new System.Drawing.Point(15, 64);
+            this.label2.Location = new System.Drawing.Point(15, 98);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(319, 13);
             this.label2.TabIndex = 2;
@@ -78,7 +80,7 @@
             // 
             // InputMinP1
             // 
-            this.InputMinP1.Location = new System.Drawing.Point(109, 80);
+            this.InputMinP1.Location = new System.Drawing.Point(109, 114);
             this.InputMinP1.Name = "InputMinP1";
             this.InputMinP1.Size = new System.Drawing.Size(55, 20);
             this.InputMinP1.TabIndex = 3;
@@ -87,7 +89,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(35, 83);
+            this.label3.Location = new System.Drawing.Point(35, 117);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 13);
             this.label3.TabIndex = 4;
@@ -96,7 +98,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(170, 83);
+            this.label4.Location = new System.Drawing.Point(170, 117);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(71, 13);
             this.label4.TabIndex = 6;
@@ -104,7 +106,7 @@
             // 
             // InputMaxP1
             // 
-            this.InputMaxP1.Location = new System.Drawing.Point(247, 80);
+            this.InputMaxP1.Location = new System.Drawing.Point(247, 114);
             this.InputMaxP1.Name = "InputMaxP1";
             this.InputMaxP1.Size = new System.Drawing.Size(55, 20);
             this.InputMaxP1.TabIndex = 5;
@@ -113,7 +115,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(170, 132);
+            this.label5.Location = new System.Drawing.Point(170, 166);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(71, 13);
             this.label5.TabIndex = 11;
@@ -121,7 +123,7 @@
             // 
             // InputMaxP2
             // 
-            this.InputMaxP2.Location = new System.Drawing.Point(247, 129);
+            this.InputMaxP2.Location = new System.Drawing.Point(247, 163);
             this.InputMaxP2.Name = "InputMaxP2";
             this.InputMaxP2.Size = new System.Drawing.Size(55, 20);
             this.InputMaxP2.TabIndex = 10;
@@ -130,7 +132,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(35, 132);
+            this.label6.Location = new System.Drawing.Point(35, 166);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(68, 13);
             this.label6.TabIndex = 9;
@@ -138,7 +140,7 @@
             // 
             // InputMinP2
             // 
-            this.InputMinP2.Location = new System.Drawing.Point(109, 129);
+            this.InputMinP2.Location = new System.Drawing.Point(109, 163);
             this.InputMinP2.Name = "InputMinP2";
             this.InputMinP2.Size = new System.Drawing.Size(55, 20);
             this.InputMinP2.TabIndex = 8;
@@ -148,7 +150,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.label7.Location = new System.Drawing.Point(18, 113);
+            this.label7.Location = new System.Drawing.Point(18, 147);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(316, 13);
             this.label7.TabIndex = 7;
@@ -157,7 +159,7 @@
             // 
             // StartLoggingButton
             // 
-            this.StartLoggingButton.Location = new System.Drawing.Point(132, 155);
+            this.StartLoggingButton.Location = new System.Drawing.Point(132, 189);
             this.StartLoggingButton.Name = "StartLoggingButton";
             this.StartLoggingButton.Size = new System.Drawing.Size(75, 23);
             this.StartLoggingButton.TabIndex = 12;
@@ -165,12 +167,32 @@
             this.StartLoggingButton.UseVisualStyleBackColor = true;
             this.StartLoggingButton.Click += new System.EventHandler(this.startLoggingButton_Click);
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(69, 15);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(63, 13);
+            this.label8.TabIndex = 16;
+            this.label8.Text = "Log Interval";
+            // 
+            // InputLogSpeed
+            // 
+            this.InputLogSpeed.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.InputLogSpeed.FormattingEnabled = true;
+            this.InputLogSpeed.Location = new System.Drawing.Point(194, 12);
+            this.InputLogSpeed.Name = "InputLogSpeed";
+            this.InputLogSpeed.Size = new System.Drawing.Size(91, 21);
+            this.InputLogSpeed.TabIndex = 15;
+            // 
             // LogOptions
             // 
             this.AcceptButton = this.StartLoggingButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(346, 189);
+            this.ClientSize = new System.Drawing.Size(346, 214);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.InputLogSpeed);
             this.Controls.Add(this.StartLoggingButton);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.InputMaxP2);
@@ -207,5 +229,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button StartLoggingButton;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox InputLogSpeed;
     }
 }

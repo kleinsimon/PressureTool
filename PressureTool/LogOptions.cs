@@ -12,8 +12,17 @@ namespace PressureTool
     /// <summary>
     /// Provides a Form to set Logging Options
     /// </summary>
+    /// 
+
     public partial class LogOptions : Form
     {
+        Dictionary<string, string> SpeedValues = new Dictionary<string, string>() 
+        { 
+            {"0", "1 ms"},
+            {"1", "1 s"},
+            {"2", "1 min"},
+        };
+
         private MainForm ParentWindow;
         private Color Default;
 
@@ -26,6 +35,11 @@ namespace PressureTool
             InitializeComponent();
             ParentWindow = Window;
             Default = InputDuration.BackColor;
+
+            InputLogSpeed.DisplayMember = "Value";
+            InputLogSpeed.ValueMember = "Key";
+            InputLogSpeed.DataSource = new BindingSource(SpeedValues, null);
+            InputLogSpeed.SelectedValue = Properties.Settings.Default.LogSpeed;
         }
 
         /// <summary>
@@ -80,9 +94,11 @@ namespace PressureTool
                     (minP1 == "") ? double.MinValue : double.Parse(minP1),
                     (maxP1 == "") ? double.MaxValue : double.Parse(maxP1),
                     (minP2 == "") ? double.MinValue : double.Parse(minP2),
-                    (maxP2 == "") ? double.MaxValue : double.Parse(maxP2)
+                    (maxP2 == "") ? double.MaxValue : double.Parse(maxP2),
+                    (string) InputLogSpeed.SelectedValue
                     );
 
+                Properties.Settings.Default.LogSpeed = (string) InputLogSpeed.SelectedValue;
                 this.Close();
                 this.Dispose();
             }

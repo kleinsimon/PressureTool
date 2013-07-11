@@ -30,8 +30,6 @@
         {
             this.InputDisplaySpeed = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.InputLogSpeed = new System.Windows.Forms.ComboBox();
             this.SaveSettingsButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.InputConnectOnStart = new System.Windows.Forms.ComboBox();
@@ -58,24 +56,6 @@
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Display Interval";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 36);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Log Interval";
-            // 
-            // InputLogSpeed
-            // 
-            this.InputLogSpeed.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.InputLogSpeed.FormattingEnabled = true;
-            this.InputLogSpeed.Location = new System.Drawing.Point(137, 33);
-            this.InputLogSpeed.Name = "InputLogSpeed";
-            this.InputLogSpeed.Size = new System.Drawing.Size(91, 21);
-            this.InputLogSpeed.TabIndex = 2;
             // 
             // SaveSettingsButton
             // 
@@ -156,8 +136,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.InputConnectOnStart);
             this.Controls.Add(this.SaveSettingsButton);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.InputLogSpeed);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.InputDisplaySpeed);
             this.Name = "Settings";
@@ -171,8 +149,6 @@
 
         private System.Windows.Forms.ComboBox InputDisplaySpeed;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox InputLogSpeed;
         private System.Windows.Forms.Button SaveSettingsButton;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox InputConnectOnStart;

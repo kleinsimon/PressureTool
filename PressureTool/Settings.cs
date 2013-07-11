@@ -52,11 +52,6 @@ namespace PressureTool
             InputDisplaySpeed.DataSource = new BindingSource(SpeedValues, null);
             InputDisplaySpeed.DataBindings.Add("SelectedValue", ParentWindow.DisplaySpeed, null, true, DataSourceUpdateMode.Never);
 
-            InputLogSpeed.DisplayMember = "Value";
-            InputLogSpeed.ValueMember = "Key";
-            InputLogSpeed.DataSource = new BindingSource(SpeedValues, null);
-            InputLogSpeed.DataBindings.Add("SelectedValue", ParentWindow.LogSpeed, null, true, DataSourceUpdateMode.Never);
-
             InputConnectOnStart.DisplayMember = "Key";
             InputConnectOnStart.ValueMember = "Value";
             InputConnectOnStart.DataSource = new BindingSource(BoolValues, null);
@@ -78,7 +73,6 @@ namespace PressureTool
         private void saveSettingsButton_Click(object sender, EventArgs e)
         {
             ParentWindow.DisplaySpeed = (string)InputDisplaySpeed.SelectedValue;
-            ParentWindow.LogSpeed = (string)InputLogSpeed.SelectedValue;
             ParentWindow.connectOnStart = (bool)InputConnectOnStart.SelectedValue;
             ParentWindow.debugLevel = (int)InputLogLevel.SelectedValue;
             ParentWindow.refreshSpeed = InputRefresh.Text;

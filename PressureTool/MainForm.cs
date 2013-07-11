@@ -19,7 +19,6 @@ namespace PressureTool
         public const string LF = "\u000a";
 
         //Settings Variables
-        public string LogSpeed = "1";
         public string DisplaySpeed = "1";
         public int debugLevel = 1;
         public string refreshSpeed
@@ -58,6 +57,14 @@ namespace PressureTool
                     ButLogStart.BackColor = Color.Green;
                     ButLogStart.Image = Properties.Resources.Gear;
                     ButLogStart.Checked = true;
+
+                    txtMes1On.Visible = false;
+                    TXTError.Visible = false;
+                    TXTmes1Calib.Visible = false;
+                    TXTmes1Degas.Visible = false;
+                    TXTmes1Offset.Visible = false;
+                    TXTmes1SP1.Visible = false;
+                    TXTmes1SP2.Visible = false;
                 }
                 else
                 {
@@ -65,6 +72,14 @@ namespace PressureTool
                     ButLogStart.Text = "Log...";
                     ButLogStart.BackColor = Color.Transparent;
                     ButLogStart.Checked = false;
+
+                    txtMes1On.Visible = true;
+                    TXTError.Visible = true;
+                    TXTmes1Calib.Visible = true;
+                    TXTmes1Degas.Visible = true;
+                    TXTmes1Offset.Visible = true;
+                    TXTmes1SP1.Visible = true;
+                    TXTmes1SP2.Visible = true;
                 }
             }
         }
@@ -102,7 +117,6 @@ namespace PressureTool
                 BoxBaud.Text = Properties.Settings.Default.BaudRate;
                 BoxComPorts.Text= Properties.Settings.Default.ComPort;
                 DisplaySpeed = Properties.Settings.Default.DisplaySpeed;
-                LogSpeed = Properties.Settings.Default.LogSpeed;
                 connectOnStart = Properties.Settings.Default.ConnectOnStart;
                 refreshSpeed = Properties.Settings.Default.RefreshSpeed;
             }
@@ -297,7 +311,6 @@ namespace PressureTool
             Properties.Settings.Default.ComPort = BoxComPorts.Text;
             Properties.Settings.Default.BaudRate = BoxBaud.Text;
             Properties.Settings.Default.DisplaySpeed = DisplaySpeed;
-            Properties.Settings.Default.LogSpeed = LogSpeed;
             Properties.Settings.Default.ConnectOnStart = connectOnStart;
             Properties.Settings.Default.RefreshSpeed = refreshSpeed;
             Properties.Settings.Default.Save();
@@ -597,7 +610,7 @@ namespace PressureTool
         /// <param name="maxP1">Upper Pressure Limit on Channel 1</param>
         /// <param name="minP2">Lower Pressure Limit on Channel 2</param>
         /// <param name="maxP2">Upper Pressure Limit on Channel 2</param>
-        public void startLogging(TimeSpan duration, double minP1, double maxP1, double minP2, double maxP2)
+        public void startLogging(TimeSpan duration, double minP1, double maxP1, double minP2, double maxP2, string logspeed)
         {
             if (!Port.IsOpen)
             {
@@ -619,7 +632,7 @@ namespace PressureTool
             startChart();
             ChartWindow.clear();
             OutputBuffer.Clear();
-            sendQuestion(Questions.COM, new string[] { LogSpeed });
+            sendQuestion(Questions.COM, new string[] { logspeed });
         }
 
         /// <summary>
