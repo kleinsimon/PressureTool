@@ -47,7 +47,7 @@
             // 
             this.InputDisplaySpeed.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.InputDisplaySpeed.FormattingEnabled = true;
-            this.InputDisplaySpeed.Location = new System.Drawing.Point(137, 6);
+            this.InputDisplaySpeed.Location = new System.Drawing.Point(137, 68);
             this.InputDisplaySpeed.Name = "InputDisplaySpeed";
             this.InputDisplaySpeed.Size = new System.Drawing.Size(91, 21);
             this.InputDisplaySpeed.TabIndex = 0;
@@ -55,7 +55,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(12, 71);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 1;
@@ -63,7 +63,7 @@
             // 
             // SaveSettingsButton
             // 
-            this.SaveSettingsButton.Location = new System.Drawing.Point(82, 167);
+            this.SaveSettingsButton.Location = new System.Drawing.Point(78, 177);
             this.SaveSettingsButton.Name = "SaveSettingsButton";
             this.SaveSettingsButton.Size = new System.Drawing.Size(75, 23);
             this.SaveSettingsButton.TabIndex = 4;
@@ -74,7 +74,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 36);
+            this.label3.Location = new System.Drawing.Point(12, 98);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(87, 13);
             this.label3.TabIndex = 6;
@@ -84,7 +84,7 @@
             // 
             this.InputConnectOnStart.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.InputConnectOnStart.FormattingEnabled = true;
-            this.InputConnectOnStart.Location = new System.Drawing.Point(137, 33);
+            this.InputConnectOnStart.Location = new System.Drawing.Point(137, 95);
             this.InputConnectOnStart.Name = "InputConnectOnStart";
             this.InputConnectOnStart.Size = new System.Drawing.Size(91, 21);
             this.InputConnectOnStart.TabIndex = 5;
@@ -92,7 +92,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 63);
+            this.label4.Location = new System.Drawing.Point(12, 125);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 13);
             this.label4.TabIndex = 8;
@@ -106,7 +106,7 @@
             "1",
             "2",
             "3"});
-            this.InputLogLevel.Location = new System.Drawing.Point(137, 60);
+            this.InputLogLevel.Location = new System.Drawing.Point(137, 122);
             this.InputLogLevel.Name = "InputLogLevel";
             this.InputLogLevel.Size = new System.Drawing.Size(91, 21);
             this.InputLogLevel.TabIndex = 7;
@@ -114,7 +114,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 90);
+            this.label5.Location = new System.Drawing.Point(12, 152);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(91, 13);
             this.label5.TabIndex = 10;
@@ -122,7 +122,7 @@
             // 
             // InputRefresh
             // 
-            this.InputRefresh.Location = new System.Drawing.Point(137, 87);
+            this.InputRefresh.Location = new System.Drawing.Point(137, 149);
             this.InputRefresh.Name = "InputRefresh";
             this.InputRefresh.Size = new System.Drawing.Size(91, 20);
             this.InputRefresh.TabIndex = 11;
@@ -131,7 +131,7 @@
             // 
             this.BoxComPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BoxComPorts.FormattingEnabled = true;
-            this.BoxComPorts.Location = new System.Drawing.Point(137, 113);
+            this.BoxComPorts.Location = new System.Drawing.Point(137, 14);
             this.BoxComPorts.Name = "BoxComPorts";
             this.BoxComPorts.Size = new System.Drawing.Size(91, 21);
             this.BoxComPorts.TabIndex = 40;
@@ -140,7 +140,7 @@
             // 
             this.BoxBaud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BoxBaud.FormattingEnabled = true;
-            this.BoxBaud.Location = new System.Drawing.Point(137, 140);
+            this.BoxBaud.Location = new System.Drawing.Point(137, 41);
             this.BoxBaud.Name = "BoxBaud";
             this.BoxBaud.Size = new System.Drawing.Size(91, 21);
             this.BoxBaud.TabIndex = 39;
@@ -148,7 +148,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 116);
+            this.label2.Location = new System.Drawing.Point(12, 17);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 13);
             this.label2.TabIndex = 41;
@@ -157,7 +157,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 143);
+            this.label6.Location = new System.Drawing.Point(12, 44);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(58, 13);
             this.label6.TabIndex = 42;
@@ -168,7 +168,7 @@
             this.AcceptButton = this.SaveSettingsButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(240, 198);
+            this.ClientSize = new System.Drawing.Size(246, 212);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.BoxComPorts);

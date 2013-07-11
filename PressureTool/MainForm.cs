@@ -137,8 +137,6 @@ namespace PressureTool
             NumberFormat.NumberDecimalSeparator = ".";
             NumberFormat.NumberGroupSeparator = "";
 
-
-
             try
             {
                 DisplaySpeed = Properties.Settings.Default.DisplaySpeed;
