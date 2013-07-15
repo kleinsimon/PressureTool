@@ -37,7 +37,7 @@ namespace PressureTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("9600")]
         public string BaudRate {
             get {
                 return ((string)(this["BaudRate"]));

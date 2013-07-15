@@ -6,7 +6,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BaudRate" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">9600</Value>
     </Setting>
     <Setting Name="LogSpeed" Type="System.String" Scope="User">
       <Value Profile="(Default)">1</Value>

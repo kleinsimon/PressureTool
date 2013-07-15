@@ -32,7 +32,7 @@ namespace PressureTool
                 double tmp;
                 if (double.TryParse(value, out tmp))
                 {
-                    getStatusTimer.Interval = (int) (tmp * 1000);
+                    getStatusTimer.Interval = (int)(tmp * 1000);
                 }
             }
         }
@@ -133,7 +133,7 @@ namespace PressureTool
         {
             InitializeComponent();
             Log = new DataLogger(this);
-            NumberFormat = (NumberFormatInfo) CultureInfo.InstalledUICulture.NumberFormat.Clone();
+            NumberFormat = (NumberFormatInfo)CultureInfo.InstalledUICulture.NumberFormat.Clone();
             NumberFormat.NumberDecimalSeparator = ".";
             NumberFormat.NumberGroupSeparator = "";
 
@@ -220,82 +220,82 @@ namespace PressureTool
             switch (Question)
             {
                 case Questions.PRX:
-                        txtMes1On.ForeColor = (res[0] == "0") ? Color.Yellow : Color.Gray;
-                        //txtMes2On.Visible = (res[0] == "0") ? true : false;
-                        string[] P = res[1].Split('E');
-                        TXTcurPressure.Text = P[0];
-                        TXTcurPressureExp.Text = P[1];
+                    txtMes1On.ForeColor = (res[0] == "0") ? Color.Yellow : Color.Gray;
+                    //txtMes2On.Visible = (res[0] == "0") ? true : false;
+                    string[] P = res[1].Split('E');
+                    TXTcurPressure.Text = P[0];
+                    TXTcurPressureExp.Text = P[1];
                     break;
-                
+
                 case Questions.SPS:
-                        TXTmes1SP1.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
-                        TXTmes1SP2.ForeColor = (res[1] == "1") ? Color.Yellow : Color.Gray;
+                    TXTmes1SP1.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
+                    TXTmes1SP2.ForeColor = (res[1] == "1") ? Color.Yellow : Color.Gray;
                     break;
 
                 case Questions.DGS:
-                        TXTmes1Degas.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
+                    TXTmes1Degas.ForeColor = (res[0] == "1") ? Color.Yellow : Color.Gray;
                     break;
 
                 case Questions.UNI:
-                        TXTUnit.Text = (res[0] == "0") ? "mbar" : (res[0] == "1") ? "Torr" : "Pa";
+                    TXTUnit.Text = serialInterface.Units[res[0]];
                     break;
 
                 case Questions.OFC:
-                        TXTmes1Offset.ForeColor = (res[0] == "0") ? Color.Gray : Color.Yellow;
+                    TXTmes1Offset.ForeColor = (res[0] == "0") ? Color.Gray : Color.Yellow;
                     break;
 
                 case Questions.CAL:
-                        TXTmes1Calib.ForeColor = (res[0] != "1.000") ? Color.Yellow : Color.Gray;
+                    TXTmes1Calib.ForeColor = (res[0] != "1.000") ? Color.Yellow : Color.Gray;
                     break;
 
                 case Questions.COM:
-                        txtMes1On.Visible = (res[0] == "0") ? true : false;
-                        string[] Pc = res[1].Split('E');
-                        TXTcurPressure.Text = Pc[0];
-                        TXTcurPressureExp.Text = Pc[1];
-                        //Log.addLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
-                        //Log.addValues(DateTime.Now, double.Parse(res[1].Replace('.', ',')), double.Parse(res[3].Replace('.', ',')));
-                        Log.addValues(DateTime.Now, double.Parse(res[1],NumberFormat), double.Parse(res[3],NumberFormat));
-                        if (ChartWindow != null)
+                    txtMes1On.Visible = (res[0] == "0") ? true : false;
+                    string[] Pc = res[1].Split('E');
+                    TXTcurPressure.Text = Pc[0];
+                    TXTcurPressureExp.Text = Pc[1];
+                    //Log.addLine(DateTime.Now.ToString() + "\t" + res[1] + "\t" + res[3]);
+                    //Log.addValues(DateTime.Now, double.Parse(res[1].Replace('.', ',')), double.Parse(res[3].Replace('.', ',')));
+                    Log.addValues(DateTime.Now, double.Parse(res[1], NumberFormat), double.Parse(res[3], NumberFormat));
+                    if (ChartWindow != null)
+                    {
+                        try
                         {
-                            try
+                            BeginInvoke(new Action(() =>
                             {
-                                BeginInvoke(new Action(() =>
-                                {
-                                    ChartWindow.AddToChart(DateTime.Now, double.Parse(res[1], NumberFormat));
-                                }));
-                            }
-                            catch { }
+                                ChartWindow.AddToChart(DateTime.Now, double.Parse(res[1], NumberFormat));
+                            }));
                         }
+                        catch { }
+                    }
                     break;
 
                 case Questions.ERR:
-                        TXTError.Visible = (res[0] == "0000") ? false : true;
-                        toolTip1.SetToolTip(TXTError,(res[0]=="1000") ? "ERROR" : (res[0]=="0100") ? "Hardware nicht installiert" : (res[0]=="0010") ? "Unerlaubter Parameter" : (res[0]=="0001") ? "Falsche Syntax" : "");
+                    TXTError.Visible = (res[0] == "0000") ? false : true;
+                    toolTip1.SetToolTip(TXTError, (res[0] == "1000") ? "ERROR" : (res[0] == "0100") ? "Hardware nicht installiert" : (res[0] == "0010") ? "Unerlaubter Parameter" : (res[0] == "0001") ? "Falsche Syntax" : "");
                     break;
 
                 case Questions.SP1:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 1, NumberFormat);
+                    if (RelaisWindow == null) return;
+                    if (!RelaisWindow.Visible) return;
+                    RelaisWindow.displayStatus(res[0], res[1], res[2], 1, NumberFormat);
                     break;
 
                 case Questions.SP2:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 2, NumberFormat);
+                    if (RelaisWindow == null) return;
+                    if (!RelaisWindow.Visible) return;
+                    RelaisWindow.displayStatus(res[0], res[1], res[2], 2, NumberFormat);
                     break;
 
                 case Questions.SP3:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 3, NumberFormat);
+                    if (RelaisWindow == null) return;
+                    if (!RelaisWindow.Visible) return;
+                    RelaisWindow.displayStatus(res[0], res[1], res[2], 3, NumberFormat);
                     break;
 
                 case Questions.SP4:
-                        if (RelaisWindow == null) return;
-                        if (!RelaisWindow.Visible) return;
-                        RelaisWindow.displayStatus(res[0], res[1], res[2], 4, NumberFormat);
+                    if (RelaisWindow == null) return;
+                    if (!RelaisWindow.Visible) return;
+                    RelaisWindow.displayStatus(res[0], res[1], res[2], 4, NumberFormat);
                     break;
 
                 case Questions.IOT:
@@ -304,9 +304,13 @@ namespace PressureTool
                     RelaisWindow.displayIOT(res[0], res[1]);
                     break;
 
+                case Questions.NULL:
+
+                    break;
+
                 default:
                     debugMSG("Answer not implemented: " + Question.ToString(), 1);
-                        break;
+                    break;
             }
         }
 
@@ -366,7 +370,7 @@ namespace PressureTool
                 ChartWindow = new PressureChart(this);
             ChartWindow.Show();
             ChartWindow.Pause = false;
-            
+
         }
 
         /// <summary>
@@ -494,7 +498,7 @@ namespace PressureTool
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="DoWorkEventArgs"/> instance containing the event data.</param>
         private void Asker_DoWork(object sender, DoWorkEventArgs e)
-        {           
+        {
             if (OutputBuffer.Count > 0 && !AwaitingAnswer && Port.IsOpen)
             {
                 KeyValuePair<Questions, string[]> CurCommand = OutputBuffer.Dequeue();
@@ -521,7 +525,8 @@ namespace PressureTool
                     if (Question == Questions.COM) QuestionSent = QuestionACK = ENQSent = true;
                     AwaitingAnswer = true;
                 }
-                catch (TimeoutException) {
+                catch (TimeoutException)
+                {
                     onTimeout();
                 }
             }

@@ -13,6 +13,7 @@ namespace PressureTool
     /// </summary>
     public enum Questions
     {
+        NULL,
         ADC,
         BAU,
         COM,
@@ -52,8 +53,7 @@ namespace PressureTool
         TKB,
         TLC,
         UNI,
-        WDT,
-        NULL
+        WDT
     }
 
     /// <summary>
@@ -118,6 +118,13 @@ namespace PressureTool
             { Questions.TLC, new QuestionOptions(@"\d", 1) },
             { Questions.UNI, new QuestionOptions(@"\d", 1) },
             { Questions.WDT, new QuestionOptions(@"\d", 1) },
+        };
+
+        static public Dictionary<string, string> Units = new Dictionary<string, string>()
+        {
+            {"0", "mBar"},
+            {"1", "Torr"},
+            {"2", "Pa"},
         };
     }
 
