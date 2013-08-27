@@ -122,7 +122,7 @@ namespace PressureTool
 
         static public Dictionary<string, string> Units = new Dictionary<string, string>()
         {
-            {"0", "mBar"},
+            {"0", "mbar"},
             {"1", "Torr"},
             {"2", "Pa"},
         };
