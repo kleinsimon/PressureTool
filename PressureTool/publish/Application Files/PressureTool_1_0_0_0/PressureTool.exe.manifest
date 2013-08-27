@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="PressureTool.exe" version="1.0.0.0" publicKeyToken="4bb99a1517dbdaeb" language="neutral" processorArchitecture="x86" type="win32" />
+  <description asmv2:iconFile="icon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="PressureTool" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
+    <commandLine file="PressureTool.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC-Manifestoptionen
+          Wenn Sie die Zugangsebene für das Windows-Benutzerkonto ändern möchten, ersetzen Sie den 
+          requestedExecutionLevel-Knoten durch eines der folgenden Elemente.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         Löschen Sie den requestedExecutionLevel-Knoten, wenn Sie 
+         zum Gewährleisten der Abwärtskompatibilität die Datei- und Registrierungsvirtualisierung verwenden möchten.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PressureTool.exe" size="616448">
+      <assemblyIdentity name="PressureTool" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>YWqh6M7T+G7dYdP9pDmbAgT7Ybs=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="icon.ico" size="271856">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>Ro2I/cyBx/J4UYzMtBVnUcIf4+c=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Pressure.ico" size="19518">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>fcFRyI1dAQC2F3bZtDrIRFFKyUM=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="PressureTool.exe.config" size="1421">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>SXsMrXvUV60jPO3ZTq09Ij3RoP0=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=WTECH\sk" issuerKeyHash="2e9c175dd8692b4ad25ddaa7b2eae7cda1a2d490" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>Pt2Rai8BNESe82Ueh5napI5yMP4=</DigestValue></Reference></SignedInfo><SignatureValue>lJDI5tCODG/iR9WrBb39JuKJl1aDF+9Dg74CY5/K7uXfmHHjex4zYdnLtrdsZtlJ+ofoNuk6hSE6sN0qhHnHud/2/sJ3ZY1YAfkcbDnBDNlC51A5MaCzp87I8/g5ZuL036qio8h358F/sjO+9aL53C3zw5SpJP7Uqc4cGMxueHM=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>u3s97cAa0TJKv7bFxsVaR8gZqnozOQ/JMw1t3oBPosfKUafH8lEtoTGnT/PRQfdr/SCl+zLZsP05Cd1JPOegYdpx+oWYvI05SBpf+3Ql64D56lhoQ6GgpdVpb+Cgv+TPSkonNlb4hoj00y9mAebVVQ9/T95AZIzvGtQKyELgHG0=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="fe30728ea4da99871e65f39e4434012f6a91dd3e" Description="" Url=""><as:assemblyIdentity name="PressureTool.exe" version="1.0.0.0" publicKeyToken="4bb99a1517dbdaeb" language="neutral" processorArchitecture="x86" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=WTECH\sk</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>LqTE24dBVo6Xy0t9lN50KHuoXIk=</DigestValue></Reference></SignedInfo><SignatureValue>TzGTHDjLpS+uuyZ4P+qfA4vP2ZIgIjgAx8mH/j+jFEFDJm1icL13WH+zERq9lfXWVMv29+5FhuHOWsnry0+Ifd0E2JPBEWPbRKSSAuNEaMeiT4JdCNgWdeeHSiYeo1vk/q03J1JEE9YZnQdrG15x+PhWLG/5P+o4I7utUpTQySg=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>u3s97cAa0TJKv7bFxsVaR8gZqnozOQ/JMw1t3oBPosfKUafH8lEtoTGnT/PRQfdr/SCl+zLZsP05Cd1JPOegYdpx+oWYvI05SBpf+3Ql64D56lhoQ6GgpdVpb+Cgv+TPSkonNlb4hoj00y9mAebVVQ9/T95AZIzvGtQKyELgHG0=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIBuTCCASKgAwIBAgIQWuySr26htb5JmV+cO4krETANBgkqhkiG9w0BAQUFADAbMRkwFwYDVQQDHhAAVwBUAEUAQwBIAFwAcwBrMB4XDTEzMDgyNzEyMzIxOFoXDTE0MDgyNzE4MzIxOFowGzEZMBcGA1UEAx4QAFcAVABFAEMASABcAHMAazCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAu3s97cAa0TJKv7bFxsVaR8gZqnozOQ/JMw1t3oBPosfKUafH8lEtoTGnT/PRQfdr/SCl+zLZsP05Cd1JPOegYdpx+oWYvI05SBpf+3Ql64D56lhoQ6GgpdVpb+Cgv+TPSkonNlb4hoj00y9mAebVVQ9/T95AZIzvGtQKyELgHG0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQAdXTKbp57s04KPfdKlE5j7odG6THFMTcKSLCwYEkOIickhChlXt9gajUYVScHc5KhC6DJnR+zr9dkZ76gU1IIBM6vA5ozlAlK/N7d00N3Z0pOhWlwLy0QaW3Pdju6B/PKQkqLHIGcW8OBs1vtltfSvhLFYdda4IoKx+z83nW1VlQ==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
